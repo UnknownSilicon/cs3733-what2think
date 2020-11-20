@@ -1,6 +1,6 @@
 package edu.wpi.modula3.what2think;
 
-public class TestCreateChoice extends LambdaTest{
+public class TestCreateChoice extends LambdaTest {
 
 
 }
