@@ -1,18 +1,20 @@
 package edu.wpi.modula3.what2think.db;
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import edu.wpi.modula3.what2think.model.Alternative;
+import edu.wpi.modula3.what2think.model.Choice;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
 
 public class DAO {
 	LambdaLogger logger;
 
 	Connection conn;
+
+	final String CHOICES_TABLE = "CHOICES";
+	final String ALTERNATIVES_TABLE = "ALTERNATIVES";
 
 	public DAO(LambdaLogger logger) {
 		this.logger = logger;
@@ -21,6 +23,32 @@ public class DAO {
 		} catch (Exception e) {
 			conn = null;
 		}
+	}
+
+	public boolean addChoice(Choice choice) {
+		try {
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + CHOICES_TABLE + " (choiceID,description,maxParticipants,creationTime) values(?,?,?,?);");
+			ps.setString(1, choice.getId());
+			ps.setString(2, choice.getDescription());
+			ps.setInt(3, choice.getMaxUsers());
+			Timestamp ts = new Timestamp(System.currentTimeMillis());
+			ps.setTimestamp(4, ts);
+			ps.executeUpdate();
+
+			for (Alternative a : choice.getAlternatives()) {
+				ps = conn.prepareStatement("INSERT INTO " + ALTERNATIVES_TABLE + " (alternativeID, choiceID, description) values(?,?,?)");
+				ps.setString(1, a.getId());
+				ps.setString(2, choice.getId());
+				ps.setString(3, a.getContent());
+				ps.executeUpdate();
+			}
+
+			return true;
+		} catch (Exception e) {
+			logger.log("Error in addChoice!\n" + e.getMessage() + "\n");
+		}
+
+		return false;
 	}
 
 	/*public Constant getConstant(String name) throws Exception {
