@@ -48,9 +48,9 @@ public class CreateChoice implements RequestHandler<CreateRequest, CreateRespons
 		choice.setDescription(req.getDescription());
 		choice.setMaxUsers(req.getMaxUsers());
 
-		Alternative[] alternatives = (Alternative[]) Arrays.stream(req.getAlternatives())
+		Alternative[] alternatives = Arrays.stream(req.getAlternatives())
 									.map(s -> new Alternative(UUID.randomUUID().toString(), s))
-									.toArray();
+									.toArray(Alternative[]::new);
 
 		choice.setAlternatives(alternatives);
 		choice.setCompleted(false);
