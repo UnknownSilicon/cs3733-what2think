@@ -24,4 +24,16 @@ public class CreateResponse {
 		if (choice == null) return "NoChoice";
 		return "Choice(" + choice + ")";
 	}
+
+	public Choice getChoice() {
+		return choice;
+	}
+
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	public String getError() {
+		return error;
+	}
 }
