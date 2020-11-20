@@ -1,0 +1,72 @@
+html, body {
+	height: 100%;
+	margin: 0;
+	font-family: Arial;
+	background-color: white;
+}
+
+.description {
+
+}
+
+.alternative {
+
+}
+
+.choosebutton {
+
+}
+
+.feedback {
+
+}
+
+.id-label {
+	font-size: 30px;
+	padding: 20px;
+	padding-bottom: 0px;
+	vertical-align: bottom;
+	font-weight: normal;
+}
+
+.participants-label {
+	padding: 20px;
+	padding-bottom: 0px;
+	vertical-align: bottom;
+	text-align: right;
+}
+.sign-in-label {
+	padding: 20px;
+	padding-bottom: 0px;
+	font-size: 20px;
+}
+.sign-in-button-box {
+	padding:20px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+
+.alt-label {
+	padding: 5px;
+	font-size: 16px;
+	text-align: left;
+}
+
+.alt-box {
+	margin: 5px;
+	padding:5px;
+	font-size: 14px;
+	text-align: left;
+	border-width:1px;
+	border-style: solid;
+	border-color: #dedede;
+}
+
+#MenuTop {
+	font-size: 16px;
+	padding-right: 10px;
+	padding-left: 10px;
+	background-color: black;
+	color: #dedede;
+}
