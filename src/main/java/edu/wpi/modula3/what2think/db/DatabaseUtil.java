@@ -16,7 +16,8 @@ public class DatabaseUtil {
 	   
 	// Make sure matches Schema created from MySQL WorkBench
 	public final static String dbName = "what2tables";
-	
+	public final static String testName = "what2test";
+
 	// pooled across all usages.
 	static Connection conn;
  
@@ -28,6 +29,10 @@ public class DatabaseUtil {
 		
 		// this is resistant to any SQL-injection attack.
 		String schemaName = dbName;
+		String test = System.getenv("lambdaTesting");
+		if (test != null) {
+			schemaName = testName;
+		}
 		
 		// These three environment variables must be set!
 		String dbUsername = System.getenv("dbUsername");
