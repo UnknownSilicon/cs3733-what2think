@@ -11,6 +11,11 @@ public class Alternative {
 	public Alternative() {
 	}
 
+	public Alternative(String id, String content) {
+		this.id = id;
+		this.content = content;
+	}
+
 	public Alternative(String id, String content, User[] approvers, User[] disapprovers, User[] voters, Feedback[] feedback) {
 		this.id = id;
 		this.content = content;
