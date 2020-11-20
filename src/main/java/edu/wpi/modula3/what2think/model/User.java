@@ -4,8 +4,7 @@ import com.sun.istack.internal.Nullable;
 
 public class User {
 	String name;
-
-	@Nullable
+	
 	String password;
 
 	public User() {
