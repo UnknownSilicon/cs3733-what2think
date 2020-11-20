@@ -15,7 +15,7 @@ public class DatabaseUtil {
 	public final static String multiQueries = "?allowMultiQueries=true";
 	   
 	// Make sure matches Schema created from MySQL WorkBench
-	public final static String dbName = "sys";
+	public final static String dbName = "what2tables";
 	
 	// pooled across all usages.
 	static Connection conn;
