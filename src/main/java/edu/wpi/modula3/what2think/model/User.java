@@ -1,10 +1,8 @@
 package edu.wpi.modula3.what2think.model;
 
-import com.sun.istack.internal.Nullable;
-
 public class User {
 	String name;
-	
+
 	String password;
 
 	public User() {
