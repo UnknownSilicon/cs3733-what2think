@@ -5,22 +5,11 @@ html, body {
 	background-color: white;
 }
 
-.description {
-
+.default-table {
+	width: 100%;
+	cellspacing: 0px;
+	cellpadding: 0px;
 }
-
-.alternative {
-
-}
-
-.choosebutton {
-
-}
-
-.feedback {
-
-}
-
 .id-label {
 	font-size: 30px;
 	padding: 20px;
@@ -61,6 +50,36 @@ html, body {
 	border-width:1px;
 	border-style: solid;
 	border-color: #dedede;
+}
+
+.feedback-box {
+	margin: 5px;
+	margin-left:40px;
+	margin-bottom:0px;
+	padding:5px;
+	font-size: 14px;
+	text-align: left;
+	border-width:1px;
+	border-style: solid;
+	border-color: #dedede;
+}
+.feedback-info {
+	margin: 5px;
+	margin-left:auto;
+	margin-top: -1px;
+	padding:5px;
+	font-size: 14px;
+	color: #909090;
+	text-align: right;
+	border-width:1px;
+	border-style: solid;
+	border-color: #dedede;
+	width: max-content;
+}
+.feedback-field {
+	margin:5px;
+	margin-left: 40px;
+	width:auto;
 }
 
 #MenuTop {
