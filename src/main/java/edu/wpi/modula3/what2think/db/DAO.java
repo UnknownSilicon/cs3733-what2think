@@ -22,6 +22,7 @@ public class DAO {
 			conn = DatabaseUtil.connect();
 		} catch (Exception e) {
 			conn = null;
+			logger.log("Error creating DAO");
 		}
 	}
 
