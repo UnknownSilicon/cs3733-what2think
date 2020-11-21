@@ -7,21 +7,21 @@ public class Choice {
 	Alternative[] alternatives;
 	User[] users;
 	boolean completed;
-	Alternative choosenAlternative;
+	Alternative chosenAlternative;
 	String completionTime;
 
 	public Choice() {
 
 	}
 
-	public Choice(String id, String description, Integer maxUsers, Alternative[] alternatives, User[] users, boolean completed, Alternative choosenAlternative, String completionTime) {
+	public Choice(String id, String description, Integer maxUsers, Alternative[] alternatives, User[] users, boolean completed, Alternative chosenAlternative, String completionTime) {
 		this.id = id;
 		this.description = description;
 		this.maxUsers = maxUsers;
 		this.alternatives = alternatives;
 		this.users = users;
 		this.completed = completed;
-		this.choosenAlternative = choosenAlternative;
+		this.chosenAlternative = chosenAlternative;
 		this.completionTime = completionTime;
 	}
 
@@ -73,12 +73,12 @@ public class Choice {
 		this.completed = completed;
 	}
 
-	public Alternative getChoosenAlternative() {
-		return choosenAlternative;
+	public Alternative getchosenAlternative() {
+		return chosenAlternative;
 	}
 
-	public void setChoosenAlternative(Alternative choosenAlternative) {
-		this.choosenAlternative = choosenAlternative;
+	public void setchosenAlternative(Alternative chosenAlternative) {
+		this.chosenAlternative = chosenAlternative;
 	}
 
 	public String getCompletionTime() {
