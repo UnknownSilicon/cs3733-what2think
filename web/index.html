@@ -22,7 +22,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td style="width:30%" >
+				<td class="sign-in-half" >
 					<div id="signin" class="sign-in-label">Sign In</div>
 					<table class="default-table" style="padding-left:20px;" >
 						<tr>
@@ -44,35 +44,41 @@
 				<td>
 					<div>
 						<div class="alt-label">Description:</div>
-						<div id="description" class="alt-box">yoooo</div>
+						<div id="description" class="alt-box desc-box bordered">yoooo</div>
 					</div>
-					<div>
-						<table class="default-table" >
+					<div id="alternative-container" >
+						<table class="default-table" id="default-alternative">
 						<tr>
-						<td>	
+						<td>
+							<div class="alternative">
 							<table class="default-table" >
 								<tr>
-									<td class="alt-label">Alternative 1:</td>
+									<td class="alt-label alt-num" name="altnum">Alternative 1:</td>
 									<td style="text-align:right;"><button>Make Choice</button></td>
-								</td>
 								</tr>
 							</table>
-							<div class="alt-box">a l t e r n a t i v e    t e x t</div>
-							<div class="feedback-box" >feedback goes here....</div>
-							<div class="feedback-info">Bill N. - Oct 27, 2046</div>
+							<div class="alt-box bordered alt-content">a l t e r n a t i v e    t e x t</div>
+							<div class="feedbacks-container">
+								<div class="feedback">
+									<div class="feedback-box bordered" >feedback goes here....</div>
+									<div class="feedback-info bordered">Bill N. - Oct 27, 2046</div>
+								</div>
+							</div>
 							<input class="feedback-field"/><button>Post</button>
 						</td>
 						<td>
-							<div><button>^</button>0</div>
-							<div><button>v</button>4</div>
+							<div class="vote-button-box"><button class="vote-button">^</button>0</div>
+							<div class="vote-button-box"><button class="vote-button">v</button>0</div>
 						</td>
 						</tr>
 						</table>
+						</div>
 					</div>
 				</td>
 			</tr>
 		</body>
 		</table>
 	</body>
+	<script src="tools.js"></script>
 </html>
 

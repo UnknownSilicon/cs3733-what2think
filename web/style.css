@@ -5,6 +5,10 @@ html, body {
 	background-color: white;
 }
 
+td {
+	vertical-align: top;
+}
+
 .default-table {
 	width: 100%;
 	cellspacing: 0px;
@@ -24,6 +28,12 @@ html, body {
 	vertical-align: bottom;
 	text-align: right;
 }
+
+.sign-in-half {
+	width: 30%;
+	vertical-align: top;
+}
+
 .sign-in-label {
 	padding: 20px;
 	padding-bottom: 0px;
@@ -42,14 +52,22 @@ html, body {
 	text-align: left;
 }
 
+.bordered {
+	border-width:1px;
+	border-style: solid;
+	border-color: #dedede;
+}
+
 .alt-box {
 	margin: 5px;
 	padding:5px;
 	font-size: 14px;
 	text-align: left;
-	border-width:1px;
-	border-style: solid;
-	border-color: #dedede;
+}
+
+.desc-box {
+	width:80%;
+	margin-right: auto;
 }
 
 .feedback-box {
@@ -59,10 +77,8 @@ html, body {
 	padding:5px;
 	font-size: 14px;
 	text-align: left;
-	border-width:1px;
-	border-style: solid;
-	border-color: #dedede;
 }
+
 .feedback-info {
 	margin: 5px;
 	margin-left:auto;
@@ -71,15 +87,22 @@ html, body {
 	font-size: 14px;
 	color: #909090;
 	text-align: right;
-	border-width:1px;
-	border-style: solid;
-	border-color: #dedede;
 	width: max-content;
 }
 .feedback-field {
 	margin:5px;
 	margin-left: 40px;
 	width:auto;
+}
+
+.vote-button-box {
+	padding:10px;
+	margin-right: auto;
+	margin-left: 10px;
+}
+.vote-button {
+	margin-left:10px;
+	margin-right:10px;
 }
 
 #MenuTop {
