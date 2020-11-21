@@ -3,10 +3,13 @@ package edu.wpi.modula3.what2think.db;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import edu.wpi.modula3.what2think.model.Alternative;
 import edu.wpi.modula3.what2think.model.Choice;
+import edu.wpi.modula3.what2think.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 public class DAO {
 	LambdaLogger logger;
@@ -15,6 +18,7 @@ public class DAO {
 
 	final String CHOICES_TABLE = "CHOICES";
 	final String ALTERNATIVES_TABLE = "ALTERNATIVES";
+	final String USERS_TABLE = "USERS";
 
 	public DAO(LambdaLogger logger) {
 		this.logger = logger;
@@ -28,7 +32,8 @@ public class DAO {
 
 	public boolean addChoice(Choice choice) {
 		try {
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + CHOICES_TABLE + " (choiceID,description,maxParticipants,creationTime) values(?,?,?,?);");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + CHOICES_TABLE +
+					" (choiceID,description,maxParticipants,creationTime) values(?,?,?,?);");
 			ps.setString(1, choice.getId());
 			ps.setString(2, choice.getDescription());
 			ps.setInt(3, choice.getMaxUsers());
@@ -37,7 +42,8 @@ public class DAO {
 			ps.executeUpdate();
 
 			for (Alternative a : choice.getAlternatives()) {
-				ps = conn.prepareStatement("INSERT INTO " + ALTERNATIVES_TABLE + " (alternativeID, choiceID, description) values(?,?,?)");
+				ps = conn.prepareStatement("INSERT INTO " + ALTERNATIVES_TABLE +
+						" (alternativeID, choiceID, description) values(?,?,?)");
 				ps.setString(1, a.getId());
 				ps.setString(2, choice.getId());
 				ps.setString(3, a.getContent());
@@ -49,6 +55,59 @@ public class DAO {
 			logger.log("Error in addChoice!\n" + e.getMessage() + "\n");
 		}
 
+		return false;
+	}
+
+	public boolean addUser(String choiceId, User user){
+		try {
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + USERS_TABLE +
+					" (userID,choiceID,name,password) values(?,?,?,?);");
+			ps.setString(1, UUID.randomUUID().toString());
+			ps.setString(2, choiceId);
+			ps.setString(3, user.getName());
+			ps.setString(4, user.getPassword());
+			ps.executeUpdate();
+
+			return true;
+		}
+		catch(Exception e){
+			logger.log("Error in addUser!\n" + e.getMessage() + "\n");
+		}
+		return false;
+	}
+
+	public boolean validateUser(String choiceId, User user){
+		try{
+			// check choiceID, name, password
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
+					" WHERE choiceID=? AND name=? AND password=?;");
+			ps.setString(1, choiceId);
+			ps.setString(2, user.getName());
+			ps.setString(3, user.getPassword());
+			ResultSet resultSet = ps.executeQuery();
+
+			return resultSet.next();
+		}
+		catch(Exception e){
+			logger.log("Error in getUser!\n" + e.getMessage() + "\n");
+		}
+		return false;
+	}
+
+	public boolean getUser(String choiceId, User user){
+		try{
+			// check choiceID, name, password
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
+					" WHERE choiceID=? AND name=?;");
+			ps.setString(1, choiceId);
+			ps.setString(2, user.getName());
+			ResultSet resultSet = ps.executeQuery();
+
+			return resultSet.next();
+		}
+		catch(Exception e){
+			logger.log("Error in getUser!\n" + e.getMessage() + "\n");
+		}
 		return false;
 	}
 
