@@ -94,6 +94,23 @@ public class DAO {
 		return false;
 	}
 
+	public boolean getUser(String choiceId, User user){
+		try{
+			// check choiceID, name, password
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
+					" WHERE choiceID=? AND name=?;");
+			ps.setString(1, choiceId);
+			ps.setString(2, user.getName());
+			ResultSet resultSet = ps.executeQuery();
+
+			return resultSet.next();
+		}
+		catch(Exception e){
+			logger.log("Error in getUser!\n" + e.getMessage() + "\n");
+		}
+		return false;
+	}
+
 	/*public Constant getConstant(String name) throws Exception {
 
 		try {

@@ -13,21 +13,34 @@ public class RegisterUser implements RequestHandler<RegisterRequest, RegisterRes
     LambdaLogger logger;
     DAO dao;
 
-    /** Store Choice into RDS
-     */
-    boolean registerUser(String id, User user){
-        if (logger != null) { logger.log("in storeUser"); }
+    boolean getUser(String id, User user){
+        if (logger != null) { logger.log("in getUser"); }
         if (dao == null) {
             dao = new DAO(logger);
             logger.log("Created DAO\n");
         }
 
-        if(!dao.validateUser(id, user)){
-            return dao.addUser(id, user);
+        return dao.getUser(id, user);
+    }
+
+    boolean addUser(String id, User user){
+        if (logger != null) { logger.log("in addUser"); }
+        if (dao == null) {
+            dao = new DAO(logger);
+            logger.log("Created DAO\n");
         }
-        else{
-            return true;
+
+        return dao.addUser(id, user);
+    }
+
+    boolean validateUser(String id, User user){
+        if (logger != null) { logger.log("in validateUser"); }
+        if (dao == null) {
+            dao = new DAO(logger);
+            logger.log("Created DAO\n");
         }
+
+        return dao.validateUser(id, user);
     }
 
     @Override
@@ -40,7 +53,15 @@ public class RegisterUser implements RequestHandler<RegisterRequest, RegisterRes
         String failMessage = "";
 
         try {
-            fail = !registerUser(req.getId(), req.getUser());
+            fail = !getUser(req.getId(), req.getUser());
+            if(fail){
+                fail = !addUser(req.getId(), req.getUser());
+                failMessage = "failed to add user";
+            }
+            else{
+                fail = !validateUser(req.getId(), req.getUser());
+                failMessage = "incorrect password";
+            }
         } catch (Exception e) {
             logger.log("Exception!\n" + e.getMessage() + "\n");
             fail = true;
