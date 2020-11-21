@@ -1,19 +1,39 @@
 package edu.wpi.modula3.what2think.http;
 
-public class CreateResponse {
-	public int statusCode;  // HTTP status code.
-	public String response;
+import edu.wpi.modula3.what2think.model.Choice;
 
-	public CreateResponse (int statusCode, String response) {
+public class CreateResponse {
+	Choice choice;
+	int statusCode;
+	String error;
+
+
+	public CreateResponse(Choice choice, int statusCode) {
+		this.choice = choice;
 		this.statusCode = statusCode;
-		this.response = response;
+		this.error = "";
 	}
 
+	public CreateResponse(int statusCode, String error) {
+		this.statusCode = statusCode;
+		this.error = error;
+	}
+
+	@Override
 	public String toString() {
-		if (statusCode == 200) {
-			return "Success(" + response + ")";
-		} else {
-			return "Error(" + statusCode + ", err=" + response + ")";
-		}
+		if (choice == null) return "NoChoice";
+		return "Choice(" + choice + ")";
+	}
+
+	public Choice getChoice() {
+		return choice;
+	}
+
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	public String getError() {
+		return error;
 	}
 }

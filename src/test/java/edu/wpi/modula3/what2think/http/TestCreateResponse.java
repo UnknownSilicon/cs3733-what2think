@@ -10,6 +10,6 @@ public class TestCreateResponse {
 	public void testConstruct() {
 		CreateResponse response = new CreateResponse(123, "abc");
 		assertEquals(123, response.statusCode);
-		assertEquals("abc", response.response);
+		assertEquals("abc", response.error);
 	}
 }
