@@ -121,7 +121,9 @@ function onCreateClick(e){
 		if (xhr.readyState === XMLHttpRequest.DONE) {
 			if (xhr.status === 200) {
 				console.log ("XHR:" + xhr.responseText);
-				
+				let xhrJson = JSON.parse(xhr.responseText)
+				let id = xhrJson["choice"]["id"]
+				window.location.href = window.location.href + "&id=" + id
 			} else if (xhr.status === 400) {
 				alert ("unable to process request");
 			}
