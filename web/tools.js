@@ -181,12 +181,17 @@ function onSignInClick(e) {
 		console.log(xhr);
 		console.log(xhr.request);
 		if (xhr.readyState === XMLHttpRequest.DONE) {
-			if (xhr.status === 200) {
-				console.log("Logged in!")
+			console.log("Response: " + xhr.responseText)
+			let responseJson = JSON.parse(xhr.responseText)
 
+			// This _should_ just look at the response code, but API gateway is dumb
+			if (responseJson["statusCode"] === 200) {
+				console.log("Logged in!")
 				// Do things!
+				document.getElementById("signedInMsg").innerText = "Signed in!"
 			} else {
-				alert("Unable to process request")
+				let error = responseJson["error"]
+				alert("Unable to process request: " + error)
 			}
 		} else {
 			console.log("Something broke! You shouldn't be here!")
