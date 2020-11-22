@@ -33,11 +33,22 @@ function loadBasedOnID(id) {
 	let body = document.getElementById("body");
 	if (typeof id === "undefined") {
 		body.removeChild(choice_display);
-		setupInput();
+		setupCreateInput()
 	} else {
 		body.removeChild(choice_create);
+		setupChoiceInput()
+		// Actually go load the choice. Call the API and do the things
 	}
 }
+
+function setupCreateInput() {
+	document.getElementById("create-choice-button").onclick = onCreateClick;
+}
+
+function setupChoiceInput() {
+	document.getElementById("signinButton").onclick = onSignInClick;
+}
+
 
 // CHOICE DISPLAY CODE //////////
 
@@ -102,10 +113,6 @@ function addFeedback(alternative, feedbackJSON) {
 
 CREATE_CHOICE_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice"
 
-function setupInput() {
-	document.getElementById("create-choice-button").onclick = onCreateClick;
-}
-
 function onCreateClick(e){
   	let js = createChoiceJSON();
 	let xhr = new XMLHttpRequest();
@@ -148,3 +155,41 @@ function createChoiceJSON(){
 	return JSON.stringify(data);
 }
 
+// LOGIN CODE //////////
+
+// Sorry, this is gross
+REGISTER_URL_START = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice/"
+REGISTER_URL_END = "/registerUser"
+
+function onSignInClick(e) {
+	let username = document.getElementById("signInName").value
+	let password = document.getElementById("signInPass").value
+
+	let fullUrl = REGISTER_URL_START + CHOICE_ID + REGISTER_URL_END
+
+	let data = {};
+	data["user"] = {}
+	data["user"]["name"] = username
+	data["user"]["password"] = password
+
+	let xhr = new XMLHttpRequest()
+	xhr.open("POST", fullUrl, true)
+	xhr.setRequestHeader("Content-Type", "application/json")
+	xhr.send(JSON.stringify(data))
+
+	xhr.onloadend = function () {
+		console.log(xhr);
+		console.log(xhr.request);
+		if (xhr.readyState === XMLHttpRequest.DONE) {
+			if (xhr.status === 200) {
+				console.log("Logged in!")
+
+				// Do things!
+			} else {
+				alert("Unable to process request")
+			}
+		} else {
+			console.log("Something broke! You shouldn't be here!")
+		}
+	}
+}
