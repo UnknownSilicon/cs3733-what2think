@@ -191,7 +191,7 @@ function onSignInClick(e) {
 				document.getElementById("signedInMsg").innerText = "Signed in!"
 			} else {
 				let error = responseJson["error"]
-				alert("Unable to process request: " + error)
+				document.getElementById("signedInMsg").innerText = responseJson["error"]
 			}
 		} else {
 			console.log("Something broke! You shouldn't be here!")
