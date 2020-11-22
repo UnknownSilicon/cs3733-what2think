@@ -1,18 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset=UTF-8 />
 		<link rel="stylesheet", href="style.css"/>
 		<title>What2Think</title>
 		<link rel="icon" type="image/png" href="images/icon.png"/>
-
 	</head>
 	<body id="body">
 		<div id="MenuTop">
 			What2Think
 		</div>
 		<table class="default-table" id="choice-display">
-		<body>
+			<tbody>
 			<tr>
 				<td>
 					<div id=choiceIDLabel class="id-label" >Choice ID 3333</div>
@@ -28,13 +27,13 @@
 						<tr>
 							<td>Your Name:</td>
 							<td>
-								<input />
+								<input>
 							</td>
 						</tr>
 						<tr>
 							<td>Password: </td>
 							<td>
-								<input />
+								<input>
 							</td>
 						</tr>
 					</table>
@@ -50,7 +49,7 @@
 						<table class="default-table" id="default-alternative">
 						<tr>
 						<td>
-							<div class="alternative">
+							<div class="alternative"></div>
 							<table class="default-table" >
 								<tr>
 									<td class="alt-label alt-num" name="altnum">Alternative 1:</td>
@@ -64,7 +63,7 @@
 									<div class="feedback-info bordered">Bill N. - Oct 27, 2046</div>
 								</div>
 							</div>
-							<input class="feedback-field"/><button>Post</button>
+							<input class="feedback-field"><button>Post</button>
 						</td>
 						<td>
 							<div class="vote-button-box"><button class="vote-button">^</button>0</div>
@@ -72,37 +71,36 @@
 						</td>
 						</tr>
 						</table>
-						</div>
 					</div>
 				</td>
 			</tr>
-		</body>
+			</tbody>
 		</table>
 		<div id="choice-create">
 			<table class="default-table">
-				<body>
+				<tbody>
 				  <tr>
 				  <td>
 					  <div class="id-label" >Create Choice</div>
 				  </td>
 				  <td>
-  					  <div id=participantsFieldLabel class="participants-label"># of Participants: <input id="participant-count-input" placeholder="#" ></input></div>
+  					  <label id=participantsFieldLabel class="participants-label"># of Participants: <input id="participant-count-input" placeholder="#" ></label>
 				  </td>
-				</body>
+				</tbody>
 			</table>
 			<div class="alt-label">Description:</div>
-			<input id="description-input"></input>
+			<input id="description-input">
 			<div id="alternative-input-container">
 				<div class="alt-label">Alternative 1:</div>
-				<input class="alt-input"></input>
+				<input class="alt-input">
 				<div class="alt-label">Alternative 2:</div>
-				<input class="alt-input"></input>
+				<input class="alt-input">
 				<div class="alt-label">Alternative 3:</div>
-				<input class="alt-input"></input>
+				<input class="alt-input">
 				<div class="alt-label">Alternative 4:</div>
-				<input class="alt-input"></input>
+				<input class="alt-input">
 				<div class="alt-label">Alternative 5:</div>
-				<input class="alt-input"></input>
+				<input class="alt-input">
 			</div>
 			<button id="create-choice-button">Create</button>
 		</div>
