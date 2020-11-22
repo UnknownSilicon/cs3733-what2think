@@ -1,4 +1,45 @@
 var altHTML = saveAltHTML();
+var queryData = parse_query_string(window.location.search.substring(1));
+var CHOICE_ID = queryData["id"];
+loadBasedOnID(CHOICE_ID);
+
+// function lovingly taken from stackoverflow
+// https://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters
+function parse_query_string(query) {
+  var vars = query.split("&");
+  var query_string = {};
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split("=");
+    var key = decodeURIComponent(pair[0]);
+    var value = decodeURIComponent(pair[1]);
+    // If first entry with this name
+    if (typeof query_string[key] === "undefined") {
+      query_string[key] = decodeURIComponent(value);
+      // If second entry with this name
+    } else if (typeof query_string[key] === "string") {
+      var arr = [query_string[key], decodeURIComponent(value)];
+      query_string[key] = arr;
+      // If third or later entry with this name
+    } else {
+      query_string[key].push(decodeURIComponent(value));
+    }
+  }
+  return query_string;
+}
+
+function loadBasedOnID(id) {
+	var choice_display = document.getElementById("choice-display");
+	var choice_create = document.getElementById("choice-create");
+	var body = document.getElementById("body");
+	if (typeof id === "undefined") {
+		body.removeChild(choice_display);
+		setupInput();
+	} else {
+		body.removeChild(choice_create);
+	}
+}
+
+// CHOICE DISPLAY CODE //////////
 
 function saveAltHTML() {
 	return document.getElementById("alternative-container").innerHTML;
@@ -57,4 +98,50 @@ function addFeedback(alternative, feedbackJSON) {
 	feedbacks.appendChild(feedback);
 }
 
+// CHOICE INPUT CODE //////////
+
+CREATE_CHOICE_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice"
+
+function setupInput() {
+	document.getElementById("create-choice-button").onclick = onCreateClick;
+}
+
+function onCreateClick(e){
+  	var js = createChoiceJSON();
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", CREATE_CHOICE_URL, true);
+
+	// send the collected data as JSON
+	xhr.send(js);
+
+	// This will process results and update HTML as appropriate. 
+	xhr.onloadend = function () {
+		console.log(xhr);
+		console.log(xhr.request);
+		if (xhr.readyState == XMLHttpRequest.DONE) {
+			if (xhr.status == 200) {
+				console.log ("XHR:" + xhr.responseText);
+			} else if (xhr.status == 400) {
+				alert ("unable to process request");
+			}
+		} else {
+			console.log("wut");
+			//processResponse(arg1, arg2, "N/A")
+		}
+	};
+}
+
+function createChoiceJSON(){
+	var data = {};
+	data["description"] = document.getElementById("description-input").value;
+	data["maxUsers"] = parseInt(document.getElementById("participant-count-input").value, 10);
+	data["alternatives"] = [];
+	var inputs = document.getElementById("alternative-input-container").getElementsByClassName("alt-input");
+	for (input of inputs) {
+		if(input.value != ""){
+			data["alternatives"].push(input.value);
+		}
+	}
+	return JSON.stringify(data);
+}
 

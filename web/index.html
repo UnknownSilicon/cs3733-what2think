@@ -7,11 +7,11 @@
 		<link rel="icon" type="image/png" href="images/icon.png"/>
 
 	</head>
-	<body>
+	<body id="body">
 		<div id="MenuTop">
 			What2Think
 		</div>
-		<table class="default-table" >
+		<table class="default-table" id="choice-display">
 		<body>
 			<tr>
 				<td>
@@ -78,6 +78,34 @@
 			</tr>
 		</body>
 		</table>
+		<div id="choice-create">
+			<table class="default-table">
+				<body>
+				  <tr>
+				  <td>
+					  <div class="id-label" >Create Choice</div>
+				  </td>
+				  <td>
+  					  <div id=participantsFieldLabel class="participants-label"># of Participants: <input id="participant-count-input" placeholder="#" ></input></div>
+				  </td>
+				</body>
+			</table>
+			<div class="alt-label">Description:</div>
+			<input id="description-input"></input>
+			<div id="alternative-input-container">
+				<div class="alt-label">Alternative 1:</div>
+				<input class="alt-input"></input>
+				<div class="alt-label">Alternative 2:</div>
+				<input class="alt-input"></input>
+				<div class="alt-label">Alternative 3:</div>
+				<input class="alt-input"></input>
+				<div class="alt-label">Alternative 4:</div>
+				<input class="alt-input"></input>
+				<div class="alt-label">Alternative 5:</div>
+				<input class="alt-input"></input>
+			</div>
+			<button id="create-choice-button">Create</button>
+		</div>
 	</body>
 	<script src="tools.js"></script>
 </html>
