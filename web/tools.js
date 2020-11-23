@@ -41,6 +41,9 @@ function loadBasedOnID(id) {
 		body.removeChild(choice_create);
 		setupChoiceInput();
 		loadChoice();
+		for (let button of document.querySelectorAll('#alternative-container button')) {
+			button.disabled = true
+		}
 	}
 }
 
@@ -251,9 +254,15 @@ function onSignInClick(e) {
 				document.getElementById("signedInMsg").innerText = "Signed in!"
 				current_users++
 				document.getElementById("participants-label").innerHTML = "Participants: " + current_users + " / " + max_users;
+				for (let button of document.querySelectorAll('#alternative-container button')) {
+					button.disabled = false
+				}
 			} else {
 				let error = responseJson["error"]
 				document.getElementById("signedInMsg").innerText = responseJson["error"]
+				for (let button of document.querySelectorAll('#alternative-container button')) {
+					button.disabled = true
+				}
 			}
 		} else {
 			console.log("Something broke! You shouldn't be here!")
