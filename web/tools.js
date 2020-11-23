@@ -61,7 +61,7 @@ function setupChoiceInput() {
 
 
 function loadChoice() {
-	var url = GET_CHOICE_URL + CHOICE_ID;
+	let url = GET_CHOICE_URL + CHOICE_ID;
 	getChoice(url);
 
 }
@@ -72,7 +72,7 @@ function dataToHTML(data) {
 	document.getElementById("description").innerHTML = data["description"];
 	setUsers(data);
 	clearAlts();
-	for (alt of data["alternatives"]) {
+	for (let alt of data["alternatives"]) {
 		if (alt !== null) {
 			appendAlt(alt);
 		}
@@ -81,7 +81,7 @@ function dataToHTML(data) {
 
 function getChoice(url) {
 	let xhr = new XMLHttpRequest();
-	var js = "{}";
+	let js = "{}";
 	xhr.open("GET", url, true);
 
 	// send the collected data as JSON
@@ -128,7 +128,7 @@ function appendAlt(altJSON) {
 	alt.getElementsByClassName("alt-num")[0].innerHTML = "Alternative " + altJSON["id"] + ":";
 	alt.getElementsByClassName("alt-content")[0].innerHTML = altJSON["content"];
 	//TODO: Display votes somewhere?
-	for(feedback of altJSON["feedback"]) {
+	for(let feedback of altJSON["feedback"]) {
 		addFeedback(alt, feedback);
 	}
 }
@@ -162,7 +162,7 @@ function addFeedback(alternative, feedbackJSON) {
 }
 
 function setUsers(choiceJSON) {
-	var userNode = document.getElementById("participants-label");
+	let userNode = document.getElementById("participants-label");
 	max_users = choiceJSON["maxUsers"]
 	current_users = choiceJSON["users"].length
 	userNode.innerHTML = "Participants: " + current_users + " / " + max_users;
