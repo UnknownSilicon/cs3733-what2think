@@ -195,6 +195,8 @@ function onCreateClick(e){
 				window.location.href = window.location.href + "?&id=" + id
 			} else if (xhrJson["statusCode"]  === 400) {
 				document.getElementById("create-error").innerText = "Error Creating Choice: " + xhrJson["error"]
+				document.getElementById("create-choice-button").innerText = "Create"
+				document.getElementById("create-choice-button").disabled = false;
 			}
 		} else {
 			console.log("wut");
