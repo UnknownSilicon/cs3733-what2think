@@ -65,15 +65,18 @@ public class DAO {
 
 	public boolean addUser(String choiceId, User user){
 		try {
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + USERS_TABLE +
-					" (userID,choiceID,name,password) values(?,?,?,?);");
-			ps.setString(1, UUID.randomUUID().toString());
-			ps.setString(2, choiceId);
-			ps.setString(3, user.getName());
-			ps.setString(4, user.getPassword());
-			ps.executeUpdate();
+			Choice c = getChoice(choiceId);
+			if(c.getUsers().length < c.getMaxUsers()) {
+				PreparedStatement ps = conn.prepareStatement("INSERT INTO " + USERS_TABLE +
+						" (userID,choiceID,name,password) values(?,?,?,?);");
+				ps.setString(1, UUID.randomUUID().toString());
+				ps.setString(2, choiceId);
+				ps.setString(3, user.getName());
+				ps.setString(4, user.getPassword());
+				ps.executeUpdate();
 
-			return true;
+				return true;
+			}
 		}
 		catch(Exception e){
 			logger.log("Error in addUser!\n" + e.getMessage() + "\n");
