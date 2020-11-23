@@ -131,7 +131,7 @@ public class DAO {
 				choice.setAlternatives(getAlternatives(choiceId));
 				choice.setUsers(getUsers(choiceId));
 				choice.setChosenAlternative(getAlternative(chosenAlternativeID));
-				choice.setCreationTime(resultSet.getTimestamp("creationTime").toString());
+				choice.setCreationTime(resultSet.getString("creationTime"));
 
 				if (choice.getChosenAlternative() == null) {
 					choice.setCompleted(false);
@@ -139,7 +139,7 @@ public class DAO {
 				}
 				else {
 					choice.setCompleted(true);
-					choice.setCompletionTime(resultSet.getTimestamp("completionTime").toString());
+					choice.setCompletionTime(resultSet.getString("completionTime"));
 				}
 			}
 
@@ -307,7 +307,7 @@ public class DAO {
 				Feedback feedback = new Feedback();
 				feedback.setUser(getUser(resultSet.getString("creatorID")));
 				feedback.setContent(resultSet.getString("content"));
-				feedback.setTimestamp(resultSet.getTimestamp("timestamp").toString());
+				feedback.setTimestamp(resultSet.getString("timestamp"));
 
 				feedbacks[index] = feedback;
 				index++;
