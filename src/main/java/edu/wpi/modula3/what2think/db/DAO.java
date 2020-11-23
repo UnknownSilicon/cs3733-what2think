@@ -3,12 +3,15 @@ package edu.wpi.modula3.what2think.db;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import edu.wpi.modula3.what2think.model.Alternative;
 import edu.wpi.modula3.what2think.model.Choice;
+import edu.wpi.modula3.what2think.model.Feedback;
 import edu.wpi.modula3.what2think.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class DAO {
@@ -19,6 +22,8 @@ public class DAO {
 	final String CHOICES_TABLE = "CHOICES";
 	final String ALTERNATIVES_TABLE = "ALTERNATIVES";
 	final String USERS_TABLE = "USERS";
+	final String VOTES_TABLE = "VOTES";
+	final String FEEDBACKS_TABLE = "FEEDBACKS";
 
 	public DAO(LambdaLogger logger) {
 		this.logger = logger;
@@ -110,6 +115,213 @@ public class DAO {
 		}
 		return false;
 	}
+
+	public Choice getChoice(String choiceId){
+		Choice choice = new Choice();
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
+					" WHERE choiceID=?;");
+			ps.setString(1, choiceId);
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				choice.setId(choiceId);
+				choice.setDescription(resultSet.getString("description"));
+				choice.setMaxUsers(resultSet.getInt("maxParticipants"));
+				String chosenAlternativeID = resultSet.getString("chosenAlternativeID");
+				choice.setAlternatives(getAlternatives(choiceId));
+				choice.setUsers(getUsers(choiceId));
+				choice.setChosenAlternative(getAlternative(chosenAlternativeID));
+				choice.setCreationTime(resultSet.getString("creationTime"));
+
+				if (choice.getChosenAlternative() == null) {
+					choice.setCompleted(false);
+					choice.setCompletionTime(null);
+				}
+				else {
+					choice.setCompleted(true);
+					choice.setCompletionTime(resultSet.getString("completionTime"));
+				}
+			}
+
+			if (choice.getId() == null) {
+				logger.log("No choice found for the given ID: " + choiceId + "\n");
+				return null;
+			}
+			return choice;
+		}
+		catch(Exception e){
+			logger.log("Error in getChoice!\n" + e.getMessage() + "\n");
+		}
+		return null;
+	}
+
+	public Alternative[] getAlternatives(String choiceId){
+		Alternative[] alternatives = new Alternative[5];
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
+					" WHERE choiceID=?;");
+			ps.setString(1, choiceId);
+			ResultSet resultSet = ps.executeQuery();
+
+			int index = 0;
+			while (resultSet.next()) {
+				String alternativeId = (resultSet.getString("alternativeID"));
+				alternatives[index] = getAlternative(alternativeId);
+				index++;
+			}
+			if (alternatives[0] == null) return null;
+			return alternatives;
+		}
+		catch(Exception e){
+			logger.log("Error in getAlternatives!\n" + e.getMessage() + "\n");
+		}
+		return null;
+	}
+
+	public Alternative getAlternative(String alternativeId){
+		Alternative alternative = new Alternative();
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
+					" WHERE alternativeID=?;");
+			ps.setString(1, alternativeId);
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				alternative.setId(alternativeId);
+				alternative.setContent(resultSet.getString("description"));
+				User[] approvers = getApprovers(alternativeId);
+				User[] disapprovers = getDisapprovers(alternativeId);
+				alternative.setApprovers(approvers);
+				alternative.setDisapprovers(disapprovers);
+				ArrayList<User> voters = new ArrayList<>();
+				if (approvers != null) voters.addAll(Arrays.asList(approvers));
+				if (disapprovers != null) voters.addAll(Arrays.asList(disapprovers));
+				alternative.setVoters(voters.toArray(new User[0]));
+				alternative.setFeedback(getFeedbacks(alternativeId));
+
+			}
+			if (alternativeId != null) return alternative;
+		}
+		catch(Exception e){
+			logger.log("Error in getAlternative!\n" + e.getMessage() + "\n");
+		}
+		return null;
+	}
+
+	public User[] getUsers(String choiceId){
+		ArrayList<User> users = new ArrayList<>();
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
+					" WHERE choiceID=?;");
+			ps.setString(1, choiceId);
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				String userId = (resultSet.getString("userID"));
+				users.add(getUser(userId));
+			}
+			if (users.size() == 0) return null;
+
+			return users.toArray(new User[0]);
+
+		}
+		catch(Exception e){
+			logger.log("Error in getUsers!\n" + e.getMessage() + "\n");
+		}
+		return null;
+	}
+
+	public User getUser(String userId){
+		User user = new User();
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
+					" WHERE userID=?;");
+			ps.setString(1, userId);
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				user.setName(resultSet.getString("name"));
+				user.setPassword(resultSet.getString("password")); //omit if poor security
+			}
+			if (user.getName() != null) return user;
+		}
+		catch(Exception e){
+			logger.log("Error in getUser!\n" + e.getMessage() + "\n");
+		}
+		return null;
+	}
+
+	public User[] getApprovers(String alternativeId){
+		ArrayList<User> users = new ArrayList<>();
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + VOTES_TABLE +
+					" WHERE alternativeId=? AND approve=?;");
+			ps.setString(1, alternativeId);
+			ps.setBoolean(2, true);
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				String userId = (resultSet.getString("userId"));
+				users.add(getUser(userId));
+			}
+			if (users.size() == 0) return null;
+			return users.toArray(new User[0]);
+		}
+		catch(Exception e){
+			logger.log("Error in getApprovers!\n" + e.getMessage() + "\n");
+		}
+		return null;
+	}
+
+	public User[] getDisapprovers(String alternativeId){
+		ArrayList<User> users = new ArrayList<>();
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + VOTES_TABLE +
+					" WHERE alternativeId=? AND approve=?;");
+			ps.setString(1, alternativeId);
+			ps.setBoolean(2, false);
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				String userId = (resultSet.getString("userId"));
+				users.add(getUser(userId));
+			}
+			if (users.size() == 0) return null;
+			return users.toArray(new User[0]);
+		}
+		catch(Exception e){
+			logger.log("Error in getDisapprovers!\n" + e.getMessage() + "\n");
+		}
+		return null;
+	}
+
+	public Feedback[] getFeedbacks(String alternativeId){
+		ArrayList<Feedback> feedbacks = new ArrayList<>();
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + FEEDBACKS_TABLE +
+					" WHERE alternativeId=?;");
+			ps.setString(1, alternativeId);
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				Feedback feedback = new Feedback();
+				feedback.setUser(getUser(resultSet.getString("creatorID")));
+				feedback.setContent(resultSet.getString("content"));
+				feedback.setTimestamp(resultSet.getString("timestamp"));
+
+				feedbacks.add(feedback);
+			}
+			if (feedbacks.size() == 0) return null;
+
+			return feedbacks.toArray(new Feedback[0]);
+		}
+		catch(Exception e){
+			logger.log("Error in getFeedbacks!\n" + e.getMessage() + "\n");
+		}
+		return null;
+	}
+
 
 	/*public Constant getConstant(String name) throws Exception {
 
