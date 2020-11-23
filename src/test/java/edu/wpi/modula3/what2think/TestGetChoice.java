@@ -7,9 +7,6 @@ import edu.wpi.modula3.what2think.model.Choice;
 import edu.wpi.modula3.what2think.model.User;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGetChoice extends LambdaTest {
@@ -39,6 +36,7 @@ public class TestGetChoice extends LambdaTest {
 
         User[] users = choice.getUsers();
         assertEquals("LUCAS", users[0].getName());
+        assertEquals("Lucas3", users[1].getName());
 
         Alternative[] alternatives = choice.getAlternatives();
         assertEquals("alt1-1", alternatives[0].getId());

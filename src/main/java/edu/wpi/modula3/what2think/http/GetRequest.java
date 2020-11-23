@@ -1,18 +1,18 @@
 package edu.wpi.modula3.what2think.http;
 
 public class GetRequest {
-    String ID;
+    String id;
 
-    public String getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public GetRequest(String ID) {
-        this.ID = ID;
+    public GetRequest(String id) {
+        this.id = id;
     }
 
     public GetRequest() {
@@ -23,7 +23,7 @@ public class GetRequest {
     public String toString() {
         String str = "ID: ";
 
-        str += ID;
+        str += id;
         str += "\n";
 
         return str;
