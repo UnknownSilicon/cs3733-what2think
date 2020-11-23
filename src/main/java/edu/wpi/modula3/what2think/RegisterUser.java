@@ -59,7 +59,7 @@ public class RegisterUser implements RequestHandler<RegisterRequest, RegisterRes
             }
             else{
                 fail = !validateUser(req.getId(), req.getUser());
-                failMessage = "invalid password";
+                failMessage = "incorrect password";
             }
         } catch (Exception e) {
             logger.log("Exception!\n" + e.getMessage() + "\n");
