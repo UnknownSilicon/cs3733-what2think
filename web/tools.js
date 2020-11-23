@@ -1,6 +1,7 @@
 let altHTML = saveAltHTML();
 let queryData = parse_query_string(window.location.search.substring(1));
 let CHOICE_ID = queryData["id"];
+let GET_CHOICE_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice/"
 loadBasedOnID(CHOICE_ID);
 
 // function lovingly taken from stackoverflow
@@ -33,11 +34,11 @@ function loadBasedOnID(id) {
 	let body = document.getElementById("body");
 	if (typeof id === "undefined") {
 		body.removeChild(choice_display);
-		setupCreateInput()
+		setupCreateInput();
 	} else {
 		body.removeChild(choice_create);
-		setupChoiceInput()
-		// Actually go load the choice. Call the API and do the things
+		setupChoiceInput();
+		loadChoice();
 	}
 }
 
@@ -51,6 +52,51 @@ function setupChoiceInput() {
 
 
 // CHOICE DISPLAY CODE //////////
+
+
+
+function loadChoice() {
+	var url = GET_CHOICE_URL + CHOICE_ID;
+	getChoice(url);
+
+}
+
+function dataToHTML(data) {
+	document.getElementById("choice-id-label").innerHTML = "Choice " + CHOICE_ID;
+	document.getElementById("description").innerHTML = data["description"];
+	setUsers(data);
+	clearAlts();
+	for (alt of data["alternatives"]) {
+		appendAlt(alt);
+	}
+}
+
+function getChoice(url) {
+	let xhr = new XMLHttpRequest();
+	var js = "{}";
+	xhr.open("GET", url, true);
+
+	// send the collected data as JSON
+	xhr.send(js);
+
+	// This will process results and update HTML as appropriate. 
+	xhr.onloadend = function () {
+		console.log(xhr);
+		console.log(xhr.request);
+		if (xhr.readyState === XMLHttpRequest.DONE) {
+			if (xhr.status === 200) {
+				console.log ("XHR:" + xhr.responseText);
+				let xhrJson = JSON.parse(xhr.responseText)
+				dataToHTML(xhrJson);
+			} else if (xhr.status === 400) {
+				alert ("unable to process request");
+			}
+		} else {
+			console.log("wut");
+			//processResponse(arg1, arg2, "N/A")
+		}
+	};
+}
 
 function saveAltHTML() {
 	return document.getElementById("alternative-container").innerHTML;
@@ -77,8 +123,6 @@ function appendAlt(altJSON) {
 	for(feedback of altJSON["feedback"]) {
 		addFeedback(alt, feedback);
 	}
-
-
 }
 
 function clearFeedback(alternative){
@@ -103,10 +147,15 @@ function addFeedback(alternative, feedbackJSON) {
 	feedback.appendChild(content);
 	feedback.appendChild(meta);
 	content.innerHTML = feedbackJSON["content"];
-	meta.innerHTML = feedbackJSON["user"] + " - " + feedbackJSON["timestamp"];
+	meta.innerHTML = feedbackJSON["user"]["name"] + " - " + feedbackJSON["timestamp"];
 	
 	let feedbacks = alternative.getElementsByClassName("feedbacks-container")[0];
 	feedbacks.appendChild(feedback);
+}
+
+function setUsers(choiceJSON) {
+	var userNode = document.getElementById("participants-label");
+	userNode.innerHTML = "Participants: " + choiceJSON["users"].length + " / " + choiceJSON["maxUsers"];
 }
 
 // CHOICE INPUT CODE //////////
