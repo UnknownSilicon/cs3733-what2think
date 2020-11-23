@@ -173,7 +173,9 @@ function setUsers(choiceJSON) {
 CREATE_CHOICE_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice"
 
 function onCreateClick(e){
-	document.getElementById("create-error").innerText = "Creating..."
+	//document.getElementById("create-error").innerText = "Creating..."
+	document.getElementById("create-choice-button").innerText = "Creating..."
+	document.getElementById("create-choice-button").disabled = true;
   	let js = createChoiceJSON();
 	let xhr = new XMLHttpRequest();
 	xhr.open("POST", CREATE_CHOICE_URL, true);
