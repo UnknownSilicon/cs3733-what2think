@@ -62,6 +62,7 @@ public class CreateChoice implements RequestHandler<CreateRequest, CreateRespons
 		} catch (Exception e) {
 			logger.log("Exception!\n" + e.getMessage() + "\n");
 			fail = true;
+			failMessage = e.getMessage();
 		}
 
 		logger.log("Creating Response\n");

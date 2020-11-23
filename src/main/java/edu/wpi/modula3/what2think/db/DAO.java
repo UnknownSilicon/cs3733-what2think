@@ -35,7 +35,12 @@ public class DAO {
 		}
 	}
 
-	public boolean addChoice(Choice choice) {
+	public boolean addChoice(Choice choice) throws Exception {
+		if (choice.getMaxUsers() == null) throw new Exception("Invalid number of participants");
+		if (choice.getAlternatives() == null || choice.getAlternatives().length == 0) {
+			throw new Exception("Invalid number of alternatives");
+		}
+
 		try {
 			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + CHOICES_TABLE +
 					" (choiceID,description,maxParticipants,creationTime) values(?,?,?,?);");
@@ -58,9 +63,8 @@ public class DAO {
 			return true;
 		} catch (Exception e) {
 			logger.log("Error in addChoice!\n" + e.getMessage() + "\n");
+			throw e;
 		}
-
-		return false;
 	}
 
 	public boolean addUser(String choiceId, User user){
