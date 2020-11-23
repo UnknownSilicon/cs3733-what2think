@@ -35,7 +35,7 @@ public class TestGetChoice extends LambdaTest {
         assertFalse(choice.isCompleted());
         assertNull(choice.getChosenAlternative());
         assertNull(choice.getCompletionTime());
-        //assertEquals("2020-11-23 00:02:39.947", choice.getCreationTime()); //working sort of? Hours wrong
+        assertEquals("2020-11-23 15:03:37.947", choice.getCreationTime()); //5 hours before table
 
         User[] users = choice.getUsers();
         assertEquals("LUCAS", users[0].getName());
@@ -55,6 +55,32 @@ public class TestGetChoice extends LambdaTest {
         assertNull(alternatives[2].getDisapprovers());
 
         assertEquals("none", alternatives[0].getFeedback()[0].getContent());
+        assertEquals("LUCAS", alternatives[0].getFeedback()[0].getUser().getName());
+        assertEquals("2020-11-23 05:03:37.947", alternatives[0].getFeedback()[0].getTimestamp());
         assertNull(alternatives[1].getFeedback());
+    }
+
+    @Test
+    public void testGetFinishedChoice() {
+        GetChoice gc = new GetChoice();
+
+        GetRequest request = new GetRequest("Test2");
+
+        GetResponse response = gc.handleRequest(request, createContext("getChoice"));
+
+        assertEquals(200, response.getStatusCode());
+
+        assertEquals("", response.getError());
+        assertNotNull(response.getChoice());
+
+        Choice choice = response.getChoice();
+
+        assertEquals("Test2", choice.getId());
+        assertEquals("Test 2", choice.getDescription());
+        assertEquals(2, choice.getMaxUsers().intValue());
+        assertTrue(choice.isCompleted());
+        assertEquals("alt 2-1", choice.getChosenAlternative().getContent());
+        assertEquals("2020-11-23 12:03:39.947", choice.getCreationTime()); //5 hours before table
+        assertEquals("2020-11-23 03:04:39.947", choice.getCompletionTime()); //5 hours before table
     }
 }

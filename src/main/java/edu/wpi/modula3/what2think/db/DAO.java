@@ -118,28 +118,39 @@ public class DAO {
 		Choice choice = new Choice();
 		try{
 			// check choiceID, name, password
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
 					" WHERE choiceID=?;");
 			ps.setString(1, choiceId);
 			ResultSet resultSet = ps.executeQuery();
 
 			while (resultSet.next()) {
-				choice.setId(resultSet.getString("choiceID"));
+				choice.setId(choiceId);
 				choice.setDescription(resultSet.getString("description"));
 				choice.setMaxUsers(resultSet.getInt("maxParticipants"));
 				String chosenAlternativeID = resultSet.getString("chosenAlternativeID");
 				choice.setAlternatives(getAlternatives(choiceId));
 				choice.setUsers(getUsers(choiceId));
 				choice.setChosenAlternative(getAlternative(chosenAlternativeID));
-				choice.setCompleted(choice.getChosenAlternative() != null);
-				choice.setCompletionTime(resultSet.getTimestamp("completionTime").toString());
 				choice.setCreationTime(resultSet.getTimestamp("creationTime").toString());
+
+				if (choice.getChosenAlternative() == null) {
+					choice.setCompleted(false);
+					choice.setCompletionTime(null);
+				}
+				else {
+					choice.setCompleted(true);
+					choice.setCompletionTime(resultSet.getTimestamp("completionTime").toString());
+				}
 			}
 
+			if (choice.getId() == null) {
+				logger.log("No choice found for the given ID: " + choiceId + "\n");
+				return null;
+			}
 			return choice;
 		}
 		catch(Exception e){
-			logger.log("Error in getChoicer!\n" + e.getMessage() + "\n");
+			logger.log("Error in getChoice!\n" + e.getMessage() + "\n");
 		}
 		return null;
 	}
@@ -152,13 +163,13 @@ public class DAO {
 			ps.setString(1, choiceId);
 			ResultSet resultSet = ps.executeQuery();
 
-			int index = 1;
+			int index = 0;
 			while (resultSet.next()) {
 				String alternativeId = (resultSet.getString("alternativeID"));
 				alternatives[index] = getAlternative(alternativeId);
 				index++;
 			}
-
+			if (alternatives[0] == null) return null;
 			return alternatives;
 		}
 		catch(Exception e){
@@ -183,8 +194,7 @@ public class DAO {
 				//alternative.setVoters(getVoters(alterativeId)); //what are voters?
 				alternative.setFeedback(getFeedbacks(alternativeId));
 			}
-
-			return alternative;
+			if (alternativeId != null) return alternative;
 		}
 		catch(Exception e){
 			logger.log("Error in getAlternative!\n" + e.getMessage() + "\n");
@@ -200,17 +210,18 @@ public class DAO {
 			ps.setString(1, choiceId);
 			ResultSet resultSet = ps.executeQuery();
 
-			int index = 1;
+			int index = 0;
 			while (resultSet.next()) {
 				String userId = (resultSet.getString("userID"));
 				users[index] = getUser(userId);
 				index++;
 			}
-
+			if (users[0] == null) return null;
 			return users;
+
 		}
 		catch(Exception e){
-			logger.log("Error in getAlternatives!\n" + e.getMessage() + "\n");
+			logger.log("Error in getUsers!\n" + e.getMessage() + "\n");
 		}
 		return null;
 	}
@@ -227,11 +238,10 @@ public class DAO {
 				user.setName(resultSet.getString("name"));
 				user.setPassword(resultSet.getString("password")); //omit if poor security
 			}
-
-			return user;
+			if (user.getName() != null) return user;
 		}
 		catch(Exception e){
-			logger.log("Error in getAlternative!\n" + e.getMessage() + "\n");
+			logger.log("Error in getUser!\n" + e.getMessage() + "\n");
 		}
 		return null;
 	}
@@ -245,17 +255,17 @@ public class DAO {
 			ps.setBoolean(2, true);
 			ResultSet resultSet = ps.executeQuery();
 
-			int index = 1;
+			int index = 0;
 			while (resultSet.next()) {
 				String userId = (resultSet.getString("userId"));
 				users[index] = getUser(userId);
 				index++;
 			}
-
-			return users;
+			if (users[0] == null) return null;
+			if (users[0].getName() != null) return users;
 		}
 		catch(Exception e){
-			logger.log("Error in getAlternatives!\n" + e.getMessage() + "\n");
+			logger.log("Error in getApprovers!\n" + e.getMessage() + "\n");
 		}
 		return null;
 	}
@@ -269,17 +279,17 @@ public class DAO {
 			ps.setBoolean(2, false);
 			ResultSet resultSet = ps.executeQuery();
 
-			int index = 1;
+			int index = 0;
 			while (resultSet.next()) {
 				String userId = (resultSet.getString("userId"));
 				users[index] = getUser(userId);
 				index++;
 			}
-
-			return users;
+			if (users[0] == null) return null;
+			if (users[0].getName() != null) return users;
 		}
 		catch(Exception e){
-			logger.log("Error in getAlternatives!\n" + e.getMessage() + "\n");
+			logger.log("Error in getDisapprovers!\n" + e.getMessage() + "\n");
 		}
 		return null;
 	}
@@ -292,7 +302,7 @@ public class DAO {
 			ps.setString(1, alternativeId);
 			ResultSet resultSet = ps.executeQuery();
 
-			int index = 1;
+			int index = 0;
 			while (resultSet.next()) {
 				Feedback feedback = new Feedback();
 				feedback.setUser(getUser(resultSet.getString("creatorID")));
@@ -302,11 +312,12 @@ public class DAO {
 				feedbacks[index] = feedback;
 				index++;
 			}
+			if (feedbacks[0] == null) return null;
 
-			return feedbacks;
+			if (feedbacks[0].getContent() != null) return feedbacks;
 		}
 		catch(Exception e){
-			logger.log("Error in getAlternatives!\n" + e.getMessage() + "\n");
+			logger.log("Error in getFeedbacks!\n" + e.getMessage() + "\n");
 		}
 		return null;
 	}
