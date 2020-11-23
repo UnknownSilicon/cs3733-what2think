@@ -170,6 +170,7 @@ function setUsers(choiceJSON) {
 CREATE_CHOICE_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice"
 
 function onCreateClick(e){
+	document.getElementById("create-error").innerText = "Creating..."
   	let js = createChoiceJSON();
 	let xhr = new XMLHttpRequest();
 	xhr.open("POST", CREATE_CHOICE_URL, true);
@@ -182,13 +183,13 @@ function onCreateClick(e){
 		console.log(xhr);
 		console.log(xhr.request);
 		if (xhr.readyState === XMLHttpRequest.DONE) {
-			if (xhr.status === 200) {
+			let xhrJson = JSON.parse(xhr.responseText)
+			if (xhrJson["statusCode"] === 200) {
 				console.log ("XHR:" + xhr.responseText);
-				let xhrJson = JSON.parse(xhr.responseText)
 				let id = xhrJson["choice"]["id"]
 				window.location.href = window.location.href + "&id=" + id
-			} else if (xhr.status === 400) {
-				alert ("unable to process request");
+			} else if (xhrJson["statusCode"]  === 400) {
+				document.getElementById("create-error").innerText = "Error Creating Choice: " + xhrJson["error"]
 			}
 		} else {
 			console.log("wut");
