@@ -190,7 +190,7 @@ function onCreateClick(e){
 			if (xhrJson["statusCode"] === 200) {
 				console.log ("XHR:" + xhr.responseText);
 				let id = xhrJson["choice"]["id"]
-				window.location.href = window.location.href + "&id=" + id
+				window.location.href = window.location.href + "?&id=" + id
 			} else if (xhrJson["statusCode"]  === 400) {
 				document.getElementById("create-error").innerText = "Error Creating Choice: " + xhrJson["error"]
 			}
