@@ -100,7 +100,7 @@ public class DAO {
 	public boolean getUser(String choiceId, User user){
 		try{
 			// check choiceID, name, password
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE  +
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
 					" WHERE choiceID=? AND name=?;");
 			ps.setString(1, choiceId);
 			ps.setString(2, user.getName());
