@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class DAO {
@@ -117,7 +119,6 @@ public class DAO {
 	public Choice getChoice(String choiceId){
 		Choice choice = new Choice();
 		try{
-			// check choiceID, name, password
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
 					" WHERE choiceID=?;");
 			ps.setString(1, choiceId);
@@ -189,10 +190,16 @@ public class DAO {
 			while (resultSet.next()) {
 				alternative.setId(alternativeId);
 				alternative.setContent(resultSet.getString("description"));
-				alternative.setApprovers(getApprovers(alternativeId));
-				alternative.setDisapprovers(getDisapprovers(alternativeId));
-				//alternative.setVoters(getVoters(alterativeId)); //what are voters?
+				User[] approvers = getApprovers(alternativeId);
+				User[] disapprovers = getDisapprovers(alternativeId);
+				alternative.setApprovers(approvers);
+				alternative.setDisapprovers(disapprovers);
+				ArrayList<User> voters = new ArrayList<>();
+				if (approvers != null) voters.addAll(Arrays.asList(approvers));
+				if (disapprovers != null) voters.addAll(Arrays.asList(disapprovers));
+				alternative.setVoters(voters.toArray(new User[0]));
 				alternative.setFeedback(getFeedbacks(alternativeId));
+
 			}
 			if (alternativeId != null) return alternative;
 		}
@@ -203,21 +210,20 @@ public class DAO {
 	}
 
 	public User[] getUsers(String choiceId){
-		User[] users = new User[99]; //start with list then transfer to array if needs to be unlimited
+		ArrayList<User> users = new ArrayList<>();
 		try{
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
 					" WHERE choiceID=?;");
 			ps.setString(1, choiceId);
 			ResultSet resultSet = ps.executeQuery();
 
-			int index = 0;
 			while (resultSet.next()) {
 				String userId = (resultSet.getString("userID"));
-				users[index] = getUser(userId);
-				index++;
+				users.add(getUser(userId));
 			}
-			if (users[0] == null) return null;
-			return users;
+			if (users.size() == 0) return null;
+
+			return users.toArray(new User[0]);
 
 		}
 		catch(Exception e){
@@ -247,7 +253,7 @@ public class DAO {
 	}
 
 	public User[] getApprovers(String alternativeId){
-		User[] users = new User[99]; //start with list then transfer to array if needs to be unlimited
+		ArrayList<User> users = new ArrayList<>();
 		try{
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + VOTES_TABLE +
 					" WHERE alternativeId=? AND approve=?;");
@@ -255,14 +261,12 @@ public class DAO {
 			ps.setBoolean(2, true);
 			ResultSet resultSet = ps.executeQuery();
 
-			int index = 0;
 			while (resultSet.next()) {
 				String userId = (resultSet.getString("userId"));
-				users[index] = getUser(userId);
-				index++;
+				users.add(getUser(userId));
 			}
-			if (users[0] == null) return null;
-			if (users[0].getName() != null) return users;
+			if (users.size() == 0) return null;
+			return users.toArray(new User[0]);
 		}
 		catch(Exception e){
 			logger.log("Error in getApprovers!\n" + e.getMessage() + "\n");
@@ -271,7 +275,7 @@ public class DAO {
 	}
 
 	public User[] getDisapprovers(String alternativeId){
-		User[] users = new User[99]; //start with list then transfer to array if needs to be unlimited
+		ArrayList<User> users = new ArrayList<>();
 		try{
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + VOTES_TABLE +
 					" WHERE alternativeId=? AND approve=?;");
@@ -279,14 +283,12 @@ public class DAO {
 			ps.setBoolean(2, false);
 			ResultSet resultSet = ps.executeQuery();
 
-			int index = 0;
 			while (resultSet.next()) {
 				String userId = (resultSet.getString("userId"));
-				users[index] = getUser(userId);
-				index++;
+				users.add(getUser(userId));
 			}
-			if (users[0] == null) return null;
-			if (users[0].getName() != null) return users;
+			if (users.size() == 0) return null;
+			return users.toArray(new User[0]);
 		}
 		catch(Exception e){
 			logger.log("Error in getDisapprovers!\n" + e.getMessage() + "\n");
@@ -295,26 +297,24 @@ public class DAO {
 	}
 
 	public Feedback[] getFeedbacks(String alternativeId){
-		Feedback[] feedbacks = new Feedback[99]; //start with list then transfer to array if needs to be unlimited
+		ArrayList<Feedback> feedbacks = new ArrayList<>();
 		try{
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + FEEDBACKS_TABLE +
 					" WHERE alternativeId=?;");
 			ps.setString(1, alternativeId);
 			ResultSet resultSet = ps.executeQuery();
 
-			int index = 0;
 			while (resultSet.next()) {
 				Feedback feedback = new Feedback();
 				feedback.setUser(getUser(resultSet.getString("creatorID")));
 				feedback.setContent(resultSet.getString("content"));
 				feedback.setTimestamp(resultSet.getString("timestamp"));
 
-				feedbacks[index] = feedback;
-				index++;
+				feedbacks.add(feedback);
 			}
-			if (feedbacks[0] == null) return null;
+			if (feedbacks.size() == 0) return null;
 
-			if (feedbacks[0].getContent() != null) return feedbacks;
+			return feedbacks.toArray(new Feedback[0]);
 		}
 		catch(Exception e){
 			logger.log("Error in getFeedbacks!\n" + e.getMessage() + "\n");

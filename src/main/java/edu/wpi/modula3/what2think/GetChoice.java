@@ -38,7 +38,7 @@ public class GetChoice implements RequestHandler<GetRequest, GetResponse> {
 
 
         try {
-            choice = getChoice(req.getID());
+            choice = getChoice(req.getId());
             if (choice == null) fail = true;
         } catch (Exception e) {
             logger.log("Exception!\n" + e.getMessage() + "\n");
