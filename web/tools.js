@@ -3,6 +3,8 @@ let queryData = parse_query_string(window.location.search.substring(1));
 let CHOICE_ID = queryData["id"];
 let GET_CHOICE_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice/"
 loadBasedOnID(CHOICE_ID);
+let max_users = 0
+let current_users = 0
 
 // function lovingly taken from stackoverflow
 // https://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters
@@ -158,7 +160,9 @@ function addFeedback(alternative, feedbackJSON) {
 
 function setUsers(choiceJSON) {
 	var userNode = document.getElementById("participants-label");
-	userNode.innerHTML = "Participants: " + choiceJSON["users"].length + " / " + choiceJSON["maxUsers"];
+	max_users = choiceJSON["maxUsers"]
+	current_users = choiceJSON["users"].length
+	userNode.innerHTML = "Participants: " + current_users + " / " + max_users;
 }
 
 // CHOICE INPUT CODE //////////
@@ -244,6 +248,8 @@ function onSignInClick(e) {
 				console.log("Logged in!")
 				// Do things!
 				document.getElementById("signedInMsg").innerText = "Signed in!"
+				current_users++
+				document.getElementById("participants-label").innerHTML = "Participants: " + current_users + " / " + max_users;
 			} else {
 				let error = responseJson["error"]
 				document.getElementById("signedInMsg").innerText = responseJson["error"]
