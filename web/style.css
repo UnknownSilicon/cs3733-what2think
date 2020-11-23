@@ -124,3 +124,26 @@ td {
 	background-color: black;
 	color: #dedede;
 }
+
+.home-link {
+	color: white;
+	background-color: transparent;
+	text-decoration: none;
+}
+
+.home-link:link {
+	color: white;
+	background-color: transparent;
+	text-decoration: none;
+}
+.home-link:active {
+	color: white;
+	background-color: transparent;
+	text-decoration: none;
+}
+
+.home-link:hover {
+	color: blue;
+	background-color: transparent;
+	text-decoration: underline;
+}
