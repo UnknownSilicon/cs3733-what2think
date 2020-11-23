@@ -170,13 +170,13 @@ public class DAO {
 				alternatives[index] = getAlternative(alternativeId);
 				index++;
 			}
-			if (alternatives[0] == null) return null;
+			if (alternatives[0] == null) return new Alternative[0];
 			return alternatives;
 		}
 		catch(Exception e){
 			logger.log("Error in getAlternatives!\n" + e.getMessage() + "\n");
 		}
-		return null;
+		return new Alternative[0];
 	}
 
 	public Alternative getAlternative(String alternativeId){
@@ -221,7 +221,7 @@ public class DAO {
 				String userId = (resultSet.getString("userID"));
 				users.add(getUser(userId));
 			}
-			if (users.size() == 0) return null;
+			if (users.size() == 0) return new User[0];
 
 			return users.toArray(new User[0]);
 
@@ -229,7 +229,7 @@ public class DAO {
 		catch(Exception e){
 			logger.log("Error in getUsers!\n" + e.getMessage() + "\n");
 		}
-		return null;
+		return new User[0];
 	}
 
 	public User getUser(String userId){
@@ -265,13 +265,13 @@ public class DAO {
 				String userId = (resultSet.getString("userId"));
 				users.add(getUser(userId));
 			}
-			if (users.size() == 0) return null;
+			if (users.size() == 0) return new User[0];
 			return users.toArray(new User[0]);
 		}
 		catch(Exception e){
 			logger.log("Error in getApprovers!\n" + e.getMessage() + "\n");
 		}
-		return null;
+		return new User[0];
 	}
 
 	public User[] getDisapprovers(String alternativeId){
@@ -287,13 +287,13 @@ public class DAO {
 				String userId = (resultSet.getString("userId"));
 				users.add(getUser(userId));
 			}
-			if (users.size() == 0) return null;
+			if (users.size() == 0) return new User[0];
 			return users.toArray(new User[0]);
 		}
 		catch(Exception e){
 			logger.log("Error in getDisapprovers!\n" + e.getMessage() + "\n");
 		}
-		return null;
+		return new User[0];
 	}
 
 	public Feedback[] getFeedbacks(String alternativeId){
@@ -312,14 +312,14 @@ public class DAO {
 
 				feedbacks.add(feedback);
 			}
-			if (feedbacks.size() == 0) return null;
+			if (feedbacks.size() == 0) return new Feedback[0];
 
 			return feedbacks.toArray(new Feedback[0]);
 		}
 		catch(Exception e){
 			logger.log("Error in getFeedbacks!\n" + e.getMessage() + "\n");
 		}
-		return null;
+		return new Feedback[0];
 	}
 
 
