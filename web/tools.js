@@ -254,7 +254,7 @@ function onSignInClick(e) {
 				console.log("Logged in!")
 				// Do things!
 				document.getElementById("signedInMsg").innerText = "Signed in!"
-				current_users++
+				loadChoice();
 				document.getElementById("participants-label").innerHTML = "Participants: " + current_users + " / " + max_users;
 				for (let button of document.querySelectorAll('#alternative-container button')) {
 					button.disabled = false
