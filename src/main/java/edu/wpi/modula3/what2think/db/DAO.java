@@ -37,7 +37,7 @@ public class DAO {
 
 	public boolean addChoice(Choice choice) throws Exception {
 		if (choice.getMaxUsers() == null) throw new Exception("Invalid number of participants");
-		if (choice.getAlternatives() == null || choice.getAlternatives().length == 0) {
+		if (choice.getAlternatives() == null || choice.getAlternatives().length < 2) {
 			throw new Exception("Invalid number of alternatives");
 		}
 
