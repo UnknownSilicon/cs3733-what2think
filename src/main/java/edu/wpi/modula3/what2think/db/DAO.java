@@ -67,10 +67,10 @@ public class DAO {
 		}
 	}
 
-	public boolean addUser(String choiceId, User user){
-		try {
-			Choice c = getChoice(choiceId);
-			if(c.getUsers().length < c.getMaxUsers()) {
+	public boolean addUser(String choiceId, User user) throws Exception {
+		Choice c = getChoice(choiceId);
+		if(c.getUsers().length < c.getMaxUsers()) {
+			try {
 				PreparedStatement ps = conn.prepareStatement("INSERT INTO " + USERS_TABLE +
 						" (userID,choiceID,name,password) values(?,?,?,?);");
 				ps.setString(1, UUID.randomUUID().toString());
@@ -80,10 +80,13 @@ public class DAO {
 				ps.executeUpdate();
 
 				return true;
+
+			} catch (Exception e) {
+				logger.log("Error in addUser!\n" + e.getMessage() + "\n");
 			}
 		}
-		catch(Exception e){
-			logger.log("Error in addUser!\n" + e.getMessage() + "\n");
+		else{
+			throw new Exception("Participants is full");
 		}
 		return false;
 	}
