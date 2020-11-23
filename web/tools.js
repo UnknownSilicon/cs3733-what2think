@@ -41,9 +41,6 @@ function loadBasedOnID(id) {
 		body.removeChild(choice_create);
 		setupChoiceInput();
 		loadChoice();
-		for (let button of document.querySelectorAll('#alternative-container button')) {
-			button.disabled = true
-		}
 	}
 }
 
@@ -63,7 +60,9 @@ function setupChoiceInput() {
 function loadChoice() {
 	let url = GET_CHOICE_URL + CHOICE_ID;
 	getChoice(url);
-
+	for (let button of document.querySelectorAll('#alternative-container button')) {
+		button.disabled = true
+	}
 }
 
 function dataToHTML(data) {
@@ -130,6 +129,9 @@ function appendAlt(altJSON) {
 	//TODO: Display votes somewhere?
 	for(let feedback of altJSON["feedback"]) {
 		addFeedback(alt, feedback);
+	}
+	for (let button of document.querySelectorAll('#alternative-container button')) {
+		button.disabled = false
 	}
 }
 
