@@ -62,12 +62,15 @@ function loadChoice() {
 }
 
 function dataToHTML(data) {
+	console.log(data)
 	document.getElementById("choice-id-label").innerHTML = "Choice " + CHOICE_ID;
 	document.getElementById("description").innerHTML = data["description"];
 	setUsers(data);
 	clearAlts();
 	for (alt of data["alternatives"]) {
-		appendAlt(alt);
+		if (alt !== null) {
+			appendAlt(alt);
+		}
 	}
 }
 
@@ -87,7 +90,7 @@ function getChoice(url) {
 			if (xhr.status === 200) {
 				console.log ("XHR:" + xhr.responseText);
 				let xhrJson = JSON.parse(xhr.responseText)
-				dataToHTML(xhrJson);
+				dataToHTML(xhrJson["choice"]);
 			} else if (xhr.status === 400) {
 				alert ("unable to process request");
 			}
@@ -211,6 +214,9 @@ REGISTER_URL_START = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/bet
 REGISTER_URL_END = "/registerUser"
 
 function onSignInClick(e) {
+
+	document.getElementById("signedInMsg").innerText = "Logging in..."
+
 	let username = document.getElementById("signInName").value
 	let password = document.getElementById("signInPass").value
 
