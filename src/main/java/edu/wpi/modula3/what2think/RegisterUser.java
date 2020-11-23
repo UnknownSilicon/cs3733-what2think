@@ -23,7 +23,7 @@ public class RegisterUser implements RequestHandler<RegisterRequest, RegisterRes
         return dao.getUser(id, user);
     }
 
-    boolean addUser(String id, User user){
+    boolean addUser(String id, User user) throws Exception{
         if (logger != null) { logger.log("in addUser"); }
         if (dao == null) {
             dao = new DAO(logger);
@@ -56,7 +56,6 @@ public class RegisterUser implements RequestHandler<RegisterRequest, RegisterRes
             fail = !getUser(req.getId(), req.getUser());
             if(fail){
                 fail = !addUser(req.getId(), req.getUser());
-                failMessage = "failed to add user";
             }
             else{
                 fail = !validateUser(req.getId(), req.getUser());
@@ -65,6 +64,7 @@ public class RegisterUser implements RequestHandler<RegisterRequest, RegisterRes
         } catch (Exception e) {
             logger.log("Exception!\n" + e.getMessage() + "\n");
             fail = true;
+            failMessage = e.getMessage();
         }
 
         logger.log("Creating Response\n");
