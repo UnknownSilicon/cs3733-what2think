@@ -8,16 +8,18 @@
 	</head>
 	<body id="body">
 		<div id="MenuTop">
+			<a href="index.html" class="home-link">
 			What2Think
+			</a>
 		</div>
 		<table class="default-table" id="choice-display">
 			<tbody>
 			<tr>
 				<td>
-					<div id=choiceIDLabel class="id-label" >Choice ID 3333</div>
+					<div id=choice-id-label class="id-label" >Choice ID 3333</div>
 				</td>
 				<td>
-					<div id=participantsLabel class="participants-label">Participants: 0 / 10</div>
+					<div id=participants-label class="participants-label">Participants: 0 / 10</div>
 				</td>
 			</tr>
 			<tr>
@@ -25,7 +27,7 @@
 					<div id="signin" class="sign-in-label">Sign In</div>
 					<table class="default-table" style="padding-left:20px;" >
 						<tr>
-							<td>Your Name:</td>
+							<td>Your Name: *</td>
 							<td>
 								<input id="signInName">
 							</td>
@@ -86,16 +88,16 @@
 					  <div class="id-label" >Create Choice</div>
 				  </td>
 				  <td>
-  					  <label id=participantsFieldLabel class="participants-label"># of Participants: <input id="participant-count-input" placeholder="#" ></label>
+  					  <label id=participantsFieldLabel class="participants-label"># of Participants: * <input id="participant-count-input" placeholder="#" ></label>
 				  </td>
 				</tbody>
 			</table>
-			<div class="alt-label">Description:</div>
+			<div class="alt-label">Description: *</div>
 			<input id="description-input">
 			<div id="alternative-input-container">
-				<div class="alt-label">Alternative 1:</div>
+				<div class="alt-label">Alternative 1: *</div>
 				<input class="alt-input">
-				<div class="alt-label">Alternative 2:</div>
+				<div class="alt-label">Alternative 2: *</div>
 				<input class="alt-input">
 				<div class="alt-label">Alternative 3:</div>
 				<input class="alt-input">
@@ -105,6 +107,7 @@
 				<input class="alt-input">
 			</div>
 			<button id="create-choice-button">Create</button>
+			<div id="create-error"></div>
 		</div>
 	</body>
 	<script src="tools.js"></script>

@@ -1,7 +1,10 @@
 let altHTML = saveAltHTML();
 let queryData = parse_query_string(window.location.search.substring(1));
 let CHOICE_ID = queryData["id"];
+let GET_CHOICE_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice/"
 loadBasedOnID(CHOICE_ID);
+let max_users = 0
+let current_users = 0
 
 // function lovingly taken from stackoverflow
 // https://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters
@@ -33,11 +36,11 @@ function loadBasedOnID(id) {
 	let body = document.getElementById("body");
 	if (typeof id === "undefined") {
 		body.removeChild(choice_display);
-		setupCreateInput()
+		setupCreateInput();
 	} else {
 		body.removeChild(choice_create);
-		setupChoiceInput()
-		// Actually go load the choice. Call the API and do the things
+		setupChoiceInput();
+		loadChoice();
 	}
 }
 
@@ -51,6 +54,56 @@ function setupChoiceInput() {
 
 
 // CHOICE DISPLAY CODE //////////
+
+
+
+function loadChoice() {
+	let url = GET_CHOICE_URL + CHOICE_ID;
+	getChoice(url);
+	for (let button of document.querySelectorAll('#alternative-container button')) {
+		button.disabled = true
+	}
+}
+
+function dataToHTML(data) {
+	console.log(data)
+	document.getElementById("choice-id-label").innerHTML = "Choice " + CHOICE_ID;
+	document.getElementById("description").innerHTML = data["description"];
+	setUsers(data);
+	clearAlts();
+	for (let alt of data["alternatives"]) {
+		if (alt !== null) {
+			appendAlt(alt);
+		}
+	}
+}
+
+function getChoice(url) {
+	let xhr = new XMLHttpRequest();
+	let js = "{}";
+	xhr.open("GET", url, true);
+
+	// send the collected data as JSON
+	xhr.send(js);
+
+	// This will process results and update HTML as appropriate. 
+	xhr.onloadend = function () {
+		console.log(xhr);
+		console.log(xhr.request);
+		if (xhr.readyState === XMLHttpRequest.DONE) {
+			if (xhr.status === 200) {
+				console.log ("XHR:" + xhr.responseText);
+				let xhrJson = JSON.parse(xhr.responseText)
+				dataToHTML(xhrJson["choice"]);
+			} else if (xhr.status === 400) {
+				alert ("unable to process request");
+			}
+		} else {
+			console.log("wut");
+			//processResponse(arg1, arg2, "N/A")
+		}
+	};
+}
 
 function saveAltHTML() {
 	return document.getElementById("alternative-container").innerHTML;
@@ -74,11 +127,12 @@ function appendAlt(altJSON) {
 	alt.getElementsByClassName("alt-num")[0].innerHTML = "Alternative " + altJSON["id"] + ":";
 	alt.getElementsByClassName("alt-content")[0].innerHTML = altJSON["content"];
 	//TODO: Display votes somewhere?
-	for(feedback of altJSON["feedback"]) {
+	for(let feedback of altJSON["feedback"]) {
 		addFeedback(alt, feedback);
 	}
-
-
+	for (let button of document.querySelectorAll('#alternative-container button')) {
+		button.disabled = false
+	}
 }
 
 function clearFeedback(alternative){
@@ -103,10 +157,17 @@ function addFeedback(alternative, feedbackJSON) {
 	feedback.appendChild(content);
 	feedback.appendChild(meta);
 	content.innerHTML = feedbackJSON["content"];
-	meta.innerHTML = feedbackJSON["user"] + " - " + feedbackJSON["timestamp"];
+	meta.innerHTML = feedbackJSON["user"]["name"] + " - " + feedbackJSON["timestamp"];
 	
 	let feedbacks = alternative.getElementsByClassName("feedbacks-container")[0];
 	feedbacks.appendChild(feedback);
+}
+
+function setUsers(choiceJSON) {
+	let userNode = document.getElementById("participants-label");
+	max_users = choiceJSON["maxUsers"]
+	current_users = choiceJSON["users"].length
+	userNode.innerHTML = "Participants: " + current_users + " / " + max_users;
 }
 
 // CHOICE INPUT CODE //////////
@@ -114,6 +175,9 @@ function addFeedback(alternative, feedbackJSON) {
 CREATE_CHOICE_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice"
 
 function onCreateClick(e){
+	//document.getElementById("create-error").innerText = "Creating..."
+	document.getElementById("create-choice-button").innerText = "Creating..."
+	document.getElementById("create-choice-button").disabled = true;
   	let js = createChoiceJSON();
 	let xhr = new XMLHttpRequest();
 	xhr.open("POST", CREATE_CHOICE_URL, true);
@@ -126,13 +190,15 @@ function onCreateClick(e){
 		console.log(xhr);
 		console.log(xhr.request);
 		if (xhr.readyState === XMLHttpRequest.DONE) {
-			if (xhr.status === 200) {
+			let xhrJson = JSON.parse(xhr.responseText)
+			if (xhrJson["statusCode"] === 200) {
 				console.log ("XHR:" + xhr.responseText);
-				let xhrJson = JSON.parse(xhr.responseText)
 				let id = xhrJson["choice"]["id"]
-				window.location.href = window.location.href + "&id=" + id
-			} else if (xhr.status === 400) {
-				alert ("unable to process request");
+				window.location.href = window.location.href + "?&id=" + id
+			} else if (xhrJson["statusCode"]  === 400) {
+				document.getElementById("create-error").innerText = "Error Creating Choice: " + xhrJson["error"]
+				document.getElementById("create-choice-button").innerText = "Create"
+				document.getElementById("create-choice-button").disabled = false;
 			}
 		} else {
 			console.log("wut");
@@ -162,6 +228,9 @@ REGISTER_URL_START = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/bet
 REGISTER_URL_END = "/registerUser"
 
 function onSignInClick(e) {
+
+	document.getElementById("signedInMsg").innerText = "Logging in..."
+
 	let username = document.getElementById("signInName").value
 	let password = document.getElementById("signInPass").value
 
@@ -189,9 +258,17 @@ function onSignInClick(e) {
 				console.log("Logged in!")
 				// Do things!
 				document.getElementById("signedInMsg").innerText = "Signed in!"
+				loadChoice();
+				document.getElementById("participants-label").innerHTML = "Participants: " + current_users + " / " + max_users;
+				for (let button of document.querySelectorAll('#alternative-container button')) {
+					button.disabled = false
+				}
 			} else {
 				let error = responseJson["error"]
 				document.getElementById("signedInMsg").innerText = responseJson["error"]
+				for (let button of document.querySelectorAll('#alternative-container button')) {
+					button.disabled = true
+				}
 			}
 		} else {
 			console.log("Something broke! You shouldn't be here!")
