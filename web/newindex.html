@@ -16,31 +16,35 @@
     </div>
 </nav>
 
-<h2 class="text-center">Create Choice</h2>
+<h2 class="text-center py-3">Create Choice</h2>
 
-<form class="container-sm">
+<form class="container-sm needs-validation" novalidate>
     <div class="form-group row">
-        <label for="numParticipants" class="col-sm-2 col-form-label">Num Participants</label>
+        <label for="numParticipants" class="col-sm-2 col-form-label"># Participants *</label>
         <div class="col-sm-10">
-            <input id="numParticipants" class="form-control" type="number" placeholder="0">
+            <input id="numParticipants" class="form-control" type="number" placeholder="0" required>
+            <div class="invalid-feedback">Please enter a whole number greater than 0</div>
         </div>
     </div>
     <div class="form-group row">
-        <label for="createDescription" class="col-sm-2 col-form-label">Description</label>
+        <label for="createDescription" class="col-sm-2 col-form-label is-invalid">Description *</label>
         <div class="col-sm-10">
-            <input id="createDescription" class="form-control" type="text" placeholder="Description">
+            <input id="createDescription" class="form-control" type="text" placeholder="Description" required>
+            <div class="invalid-feedback">Please enter a description of no more than 350 characters</div>
         </div>
     </div>
     <div class="form-group row">
-        <label for="alternative1" class="col-sm-2 col-form-label">Alternative 1</label>
+        <label for="alternative1" class="col-sm-2 col-form-label">Alternative 1 *</label>
         <div class="col-sm-10">
-            <input id="alternative1" class="form-control" type="text" placeholder="Alt 1">
+            <input id="alternative1" class="form-control" type="text" placeholder="Alt 1" required>
+            <div class="invalid-feedback">Please enter an alternative description of no more than 350 characters</div>
         </div>
     </div>
     <div class="form-group row">
-        <label for="alternative2" class="col-sm-2 col-form-label">Alternative 2</label>
+        <label for="alternative2" class="col-sm-2 col-form-label">Alternative 2 *</label>
         <div class="col-sm-10">
-            <input id="alternative2" class="form-control" type="text" placeholder="Alt 2">
+            <input id="alternative2" class="form-control" type="text" placeholder="Alt 2" required>
+            <div class="invalid-feedback">Please enter an alternative description of no more than 350 characters</div>
         </div>
     </div>
     <div class="form-group row">
@@ -64,7 +68,7 @@
 
     <div class="form-group row">
         <div class="col-sm-10">
-            <button type="submit" class="btn btn-primary">Create!</button>
+            <button id="createButton" type="button" class="btn btn-primary">Create!</button>
         </div>
     </div>
 </form>
@@ -73,5 +77,6 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script src="updateCreatePage.js"></script>
 </body>
 </html>
