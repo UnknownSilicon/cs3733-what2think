@@ -35,7 +35,12 @@ public class DAO {
 		}
 	}
 
-	public boolean addChoice(Choice choice) {
+	public boolean addChoice(Choice choice) throws Exception {
+		if (choice.getMaxUsers() == null || choice.getMaxUsers() < 1) throw new Exception("Invalid number of participants");
+		if (choice.getAlternatives() == null || choice.getAlternatives().length < 2) {
+			throw new Exception("Invalid number of alternatives");
+		}
+
 		try {
 			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + CHOICES_TABLE +
 					" (choiceID,description,maxParticipants,creationTime) values(?,?,?,?);");
@@ -58,25 +63,30 @@ public class DAO {
 			return true;
 		} catch (Exception e) {
 			logger.log("Error in addChoice!\n" + e.getMessage() + "\n");
+			throw e;
 		}
-
-		return false;
 	}
 
-	public boolean addUser(String choiceId, User user){
-		try {
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + USERS_TABLE +
-					" (userID,choiceID,name,password) values(?,?,?,?);");
-			ps.setString(1, UUID.randomUUID().toString());
-			ps.setString(2, choiceId);
-			ps.setString(3, user.getName());
-			ps.setString(4, user.getPassword());
-			ps.executeUpdate();
+	public boolean addUser(String choiceId, User user) throws Exception {
+		Choice c = getChoice(choiceId);
+		if(c.getUsers().length < c.getMaxUsers()) {
+			try {
+				PreparedStatement ps = conn.prepareStatement("INSERT INTO " + USERS_TABLE +
+						" (userID,choiceID,name,password) values(?,?,?,?);");
+				ps.setString(1, UUID.randomUUID().toString());
+				ps.setString(2, choiceId);
+				ps.setString(3, user.getName());
+				ps.setString(4, user.getPassword());
+				ps.executeUpdate();
 
-			return true;
+				return true;
+
+			} catch (Exception e) {
+				logger.log("Error in addUser!\n" + e.getMessage() + "\n");
+			}
 		}
-		catch(Exception e){
-			logger.log("Error in addUser!\n" + e.getMessage() + "\n");
+		else{
+			throw new Exception("Participants is full");
 		}
 		return false;
 	}
@@ -170,13 +180,13 @@ public class DAO {
 				alternatives[index] = getAlternative(alternativeId);
 				index++;
 			}
-			if (alternatives[0] == null) return null;
+			if (alternatives[0] == null) return new Alternative[0];
 			return alternatives;
 		}
 		catch(Exception e){
 			logger.log("Error in getAlternatives!\n" + e.getMessage() + "\n");
 		}
-		return null;
+		return new Alternative[0];
 	}
 
 	public Alternative getAlternative(String alternativeId){
@@ -221,7 +231,7 @@ public class DAO {
 				String userId = (resultSet.getString("userID"));
 				users.add(getUser(userId));
 			}
-			if (users.size() == 0) return null;
+			if (users.size() == 0) return new User[0];
 
 			return users.toArray(new User[0]);
 
@@ -229,7 +239,7 @@ public class DAO {
 		catch(Exception e){
 			logger.log("Error in getUsers!\n" + e.getMessage() + "\n");
 		}
-		return null;
+		return new User[0];
 	}
 
 	public User getUser(String userId){
@@ -265,13 +275,13 @@ public class DAO {
 				String userId = (resultSet.getString("userId"));
 				users.add(getUser(userId));
 			}
-			if (users.size() == 0) return null;
+			if (users.size() == 0) return new User[0];
 			return users.toArray(new User[0]);
 		}
 		catch(Exception e){
 			logger.log("Error in getApprovers!\n" + e.getMessage() + "\n");
 		}
-		return null;
+		return new User[0];
 	}
 
 	public User[] getDisapprovers(String alternativeId){
@@ -287,13 +297,13 @@ public class DAO {
 				String userId = (resultSet.getString("userId"));
 				users.add(getUser(userId));
 			}
-			if (users.size() == 0) return null;
+			if (users.size() == 0) return new User[0];
 			return users.toArray(new User[0]);
 		}
 		catch(Exception e){
 			logger.log("Error in getDisapprovers!\n" + e.getMessage() + "\n");
 		}
-		return null;
+		return new User[0];
 	}
 
 	public Feedback[] getFeedbacks(String alternativeId){
@@ -312,14 +322,14 @@ public class DAO {
 
 				feedbacks.add(feedback);
 			}
-			if (feedbacks.size() == 0) return null;
+			if (feedbacks.size() == 0) return new Feedback[0];
 
 			return feedbacks.toArray(new Feedback[0]);
 		}
 		catch(Exception e){
 			logger.log("Error in getFeedbacks!\n" + e.getMessage() + "\n");
 		}
-		return null;
+		return new Feedback[0];
 	}
 
 

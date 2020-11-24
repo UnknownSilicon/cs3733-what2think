@@ -49,13 +49,13 @@ public class TestGetChoice extends LambdaTest {
 
         assertEquals("LUCAS", alternatives[0].getDisapprovers()[0].getName());
         assertEquals("LUCAS", alternatives[1].getApprovers()[0].getName());
-        assertNull(alternatives[2].getApprovers());
-        assertNull(alternatives[2].getDisapprovers());
+        assertEquals(0, alternatives[2].getApprovers().length);
+        assertEquals(0, alternatives[2].getDisapprovers().length);
 
         assertEquals("none", alternatives[0].getFeedback()[0].getContent());
         assertEquals("LUCAS", alternatives[0].getFeedback()[0].getUser().getName());
         assertEquals("2020-11-23 10:03:37.947000", alternatives[0].getFeedback()[0].getTimestamp());
-        assertNull(alternatives[1].getFeedback());
+        assertEquals(0, alternatives[1].getFeedback().length);
     }
 
     @Test
