@@ -21,7 +21,7 @@
     <a class="navbar-brand" href="newindex.html">What2Think <i class="far fa-lightbulb"></i></a>
 </nav>
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <h2 class="col py-3">Choice ####</h2>
     </div>
@@ -49,44 +49,249 @@
         </div>
         <div class="col">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Alternative 1</h5>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras non urna condimentum ex posuere varius. Phasellus enim velit, pretium tristique finibus vitae, vestibulum vitae massa. Etiam quis suscipit risus, porttitor faucibus arcu. Duis in arcu ex. Suspendisse id feugiat enim. Duis eu mollis quam. Aliquam ut libero ipsum. Donec nec nisl eu ante facilisis molestie. Vestibulum porttitor accumsan erat pretium eleifend. Vestibulum neque lorem, eleifend in porttitor eu, rutrum eu elit. Nunc vel tellus augue. Donec dictum ornare rutrum. </p>
-                            <hr>
-                            <div class="float-right">
-                                <div id="alt1-feedbacks">
-                                    <blockquote class="blockquote p-2 border">
-                                        <p class="mb-0">Test</p>
-                                        <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
-                                    </blockquote>
-                                    <blockquote class="blockquote p-2 border">
-                                        <p class="mb-0">This is a much longer test</p>
-                                        <footer class="blockquote-footer">Jake - 27 Nov 20 3:40PM</footer>
-                                    </blockquote>
-                                </div>
-                                <form class="needs-validation" novalidate>
-                                    <div class="row">
-                                        <div class="col">
-                                            <label>
-                                                <input type="text" class="form-control" placeholder="Feedback">
-                                            </label>
+                <li class="list-group-item" id="alt1">
+                    <div class="container">
+                        <div class="row">
+                            <div class="card col">
+                                <div class="card-body">
+                                    <h5 class="card-title">Alternative 1</h5>
+                                    <p class="card-text" id="alt1-desc">Alt 1</p>
+                                    <hr>
+                                    <div class="float-right">
+                                        <div id="alt1-feedbacks">
+                                            <!--<blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
+                                            </blockquote>-->
+                                            <blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
+                                            </blockquote>
+                                            <blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
+                                            </blockquote>
+                                            <blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
+                                            </blockquote>
+                                            <blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
+                                            </blockquote>
+                                            <blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
+                                            </blockquote>
+                                            <blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
+                                            </blockquote>
+                                            <blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
+                                            </blockquote>
+                                            <blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
+                                            </blockquote>
+                                            <blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
+                                            </blockquote>
+                                            <blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
+                                            </blockquote>
+
                                         </div>
-                                        <div class="col-3 text-right">
-                                            <button type="button" class="btn btn-primary">Post</button>
-                                        </div>
+                                        <form class="needs-validation" novalidate>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>
+                                                        <input type="text" class="form-control" id="alt1-text" placeholder="Feedback">
+                                                        <div class="invalid-feedback">Please enter a feedback of no more than 350 characters</div>
+                                                    </label>
+                                                </div>
+                                                <div class="col-3 text-right">
+                                                    <button type="button" class="btn btn-primary" id="alt1-post">Post</button>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
-                                </form>
+                                </div>
+                            </div>
+                            <div class="col-0">
+                                <div class="sticky-top">
+                                    <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                    <br>
+                                    <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </li>
-                <li class="list-group-item">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Alternative 2</h5>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras non urna condimentum ex posuere varius. Phasellus enim velit, pretium tristique finibus vitae, vestibulum vitae massa. Etiam quis suscipit risus, porttitor faucibus arcu. Duis in arcu ex. Suspendisse id feugiat enim. Duis eu mollis quam. Aliquam ut libero ipsum. Donec nec nisl eu ante facilisis molestie. Vestibulum porttitor accumsan erat pretium eleifend. Vestibulum neque lorem, eleifend in porttitor eu, rutrum eu elit. Nunc vel tellus augue. Donec dictum ornare rutrum. </p>
+                <li class="list-group-item" id="alt2">
+                    <div class="container">
+                        <div class="row">
+                            <div class="card col">
+                                <div class="card-body">
+                                    <h5 class="card-title">Alternative 2</h5>
+                                    <p class="card-text" id="alt2-desc">Alt 2</p>
+                                    <hr>
+                                    <div class="float-right">
+                                        <div id="alt2-feedbacks">
+                                            <!--<blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:22PM</footer>
+                                            </blockquote>-->
+                                        </div>
+                                        <form class="needs-validation" novalidate>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>
+                                                        <input type="text" class="form-control" id="alt2-text" placeholder="Feedback">
+                                                        <div class="invalid-feedback">Please enter a feedback of no more than 350 characters</div>
+                                                    </label>
+                                                </div>
+                                                <div class="col-3 text-right">
+                                                    <button type="button" class="btn btn-primary" id="alt2-post">Post</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-0">
+                                <div class="sticky-top">
+                                    <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                    <br>
+                                    <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" id="alt3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="card col">
+                                <div class="card-body">
+                                    <h5 class="card-title">Alternative 3</h5>
+                                    <p class="card-text" id="alt3-desc">Alt 3</p>
+                                    <hr>
+                                    <div class="float-right">
+                                        <div id="alt3-feedbacks">
+                                            <!--<blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:33PM</footer>
+                                            </blockquote>-->
+                                        </div>
+                                        <form class="needs-validation" novalidate>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>
+                                                        <input type="text" class="form-control" id="alt3-text" placeholder="Feedback">
+                                                        <div class="invalid-feedback">Please enter a feedback of no more than 350 characters</div>
+                                                    </label>
+                                                </div>
+                                                <div class="col-3 text-right">
+                                                    <button type="button" class="btn btn-primary" id="alt3-post">Post</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-0">
+                                <div class="sticky-top">
+                                    <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                    <br>
+                                    <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" id="alt4">
+                    <div class="container">
+                        <div class="row">
+                            <div class="card col">
+                                <div class="card-body">
+                                    <h5 class="card-title">Alternative 4</h5>
+                                    <p class="card-text" id="alt4-desc">Alt 4</p>
+                                    <hr>
+                                    <div class="float-right">
+                                        <div id="alt4-feedbacks">
+                                            <!--<blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:44PM</footer>
+                                            </blockquote>-->
+                                        </div>
+                                        <form class="needs-validation" novalidate>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>
+                                                        <input type="text" class="form-control" id="alt4-text" placeholder="Feedback">
+                                                        <div class="invalid-feedback">Please enter a feedback of no more than 350 characters</div>
+                                                    </label>
+                                                </div>
+                                                <div class="col-3 text-right">
+                                                    <button type="button" class="btn btn-primary" id="alt4-post">Post</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-0">
+                                <div class="sticky-top">
+                                    <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                    <br>
+                                    <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" id="alt5">
+                    <div class="container">
+                        <div class="row">
+                            <div class="card col">
+                                <div class="card-body">
+                                    <h5 class="card-title">Alternative 5</h5>
+                                    <p class="card-text" id="alt5-desc">Alt 5</p>
+                                    <hr>
+                                    <div class="float-right">
+                                        <div id="alt5-feedbacks">
+                                            <!--<blockquote class="blockquote p-2 border">
+                                                <p class="mb-0">Test</p>
+                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:55PM</footer>
+                                            </blockquote>-->
+                                        </div>
+                                        <form class="needs-validation" novalidate>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>
+                                                        <input type="text" class="form-control" id="alt5-text" placeholder="Feedback">
+                                                        <div class="invalid-feedback">Please enter a feedback of no more than 350 characters</div>
+                                                    </label>
+                                                </div>
+                                                <div class="col-3 text-right">
+                                                    <button type="button" class="btn btn-primary" id="alt5-post">Post</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-0">
+                                <div class="sticky-top">
+                                    <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                    <br>
+                                    <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </li>
