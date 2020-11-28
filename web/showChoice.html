@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-sm-5">
             <div class="sticky-top">
-                <div class="card">
+                <div class="card" id="login-card">
                     <div class="card-body">
                         <h5 class="card-title">Log In</h5>
                         <form class="needs-validation" novalidate>
@@ -47,7 +47,13 @@
                         </form>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card d-none" id="loggedin-card">
+                    <div class="card-body">
+                        <h5 class="card-title" id="logged-in-text">Logged In As</h5>
+                    </div>
+                </div>
+                <br>
+                <div class="card" id="description-card">
                     <div class="card-body">
                         <h5 class="card-title">Description</h5>
                         <p class="card-text" id="choice-desc">Test</p>

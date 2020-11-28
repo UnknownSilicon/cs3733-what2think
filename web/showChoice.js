@@ -18,6 +18,7 @@ let PARTICIPANT_TAG = $("#participant-count")[0]
 let LOGIN_BUTTON = $("#login-button")
 
 let thisChoice;
+let thisUser;
 
 // function lovingly taken from stackoverflow
 // https://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters
@@ -119,6 +120,26 @@ function loadChoice(choice) {
     // TODO: Make completed marker somewhere
 }
 
+function getAndLoadChoice(id) {
+    getChoice(id).then(
+        data => {
+            let statusCode = data["statusCode"]
+
+            if (statusCode === 200) {
+                // Continue loading choice
+                thisChoice = data["choice"]
+                LOGIN_BUTTON.removeAttr("disabled")
+
+                loadChoice(thisChoice)
+            } else {
+                // Show error message
+                console.log("Choice does not exist!")
+                showInvalidChoice()
+            }
+        }
+    )
+}
+
 function validateLogin() {
     let name = $("#login-name")
     let pass = $("#login-password")
@@ -172,29 +193,29 @@ async function login(url, data) {
     return response.json()
 }
 
+function showInvalidChoice() {
+    hideLogin()
+    hideDescription()
+    CHOICE_TITLE.innerText = "Choice Invalid"
+}
+
+function hideLogin() {
+    $("#login-card").addClass("d-none")
+}
+
+function hideDescription() {
+    $("#description-card").addClass("d-none")
+}
+
 $(document).ready(function (){
     let queryData = parse_query_string(window.location.search.substring(1))
     let id = queryData["id"]
     if (id === undefined) {
-        // Show some sort of error message or redirect to 404 page
+        // Show some sort of error message
         console.log("Choice is undefined!")
+        showInvalidChoice()
     } else {
-        getChoice(id).then(
-            data => {
-                let statusCode = data["statusCode"]
-
-                if (statusCode === 200) {
-                    // Continue loading choice
-                    thisChoice = data["choice"]
-                    LOGIN_BUTTON.removeAttr("disabled")
-
-                    loadChoice(thisChoice)
-                } else {
-                    // Show error message or redirect to 404 page of sorts
-                    console.log("Choice does not exist!")
-                }
-            }
-        )
+        getAndLoadChoice(id)
     }
 })
 
@@ -209,6 +230,15 @@ $(document).on("click", "#login-button", function (e) {
             data => {
                 if (data["statusCode"] === 200) {
                     // Logged in! Enable buttons and change the login card to the logged in card
+                    thisUser = registerRequest["user"]
+
+                    getAndLoadChoice(thisChoice["id"])
+
+                    $("#login-card").addClass("d-none")
+                    $("#loggedin-card").removeClass("d-none")
+                    $("#logged-in-text").html("Logged In As " + thisUser["name"])
+
+                    $(":button").removeAttr("disabled")
                 } else {
                     // Fail! Show error
                     LOGIN_BUTTON.html("Error!")
@@ -225,4 +255,4 @@ $(document).on("click", "#login-button", function (e) {
         )
     }
 })
-// TODO: Implement the rest of logging in, show proper error messages for invalid choice ID, enable and bind other buttons
+// TODO: Implement the rest of logging in, enable other buttons
