@@ -17,39 +17,47 @@
     <link rel="stylesheet" href="showChoiceStyle.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <a class="navbar-brand" href="newindex.html">What2Think <i class="far fa-lightbulb"></i></a>
 </nav>
-
-<div class="container-fluid">
-    <div class="row">
-        <h2 class="col py-3">Choice ####</h2>
+<div class="container-fluid pt-5">
+    <div class="row justify-content-between">
+        <h2 class="col-5 py-3 sticky-top" id="choiceTitle">Choice ####</h2>
+        <div class="col-5 py-3 px-4 text-right" id="participant-count">Participants: 0/0</div>
     </div>
     <div class="row">
         <div class="col-sm-5">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Log In</h5>
-                    <form class="needs-validation" novalidate>
-                        <div class="form-group">
-                            <label for="loginName">Name: *</label>
-                            <input type="text" class="form-control" id="loginName" required>
-                            <div class="invalid-feedback">Please enter a name of no more than 45 characters</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="loginPassword">Password:</label>
-                            <input type="password" class="form-control" id="loginPassword">
-                            <div class="invalid-feedback">Please enter a password of no more than 45 characters</div>
-                            <div class="invalid-feedback-alt d-none">Invalid Password</div>
-                        </div>
-                        <button type="button" class="btn btn-primary" id="loginButton">Log in!</button>
-                    </form>
+            <div class="sticky-top">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Log In</h5>
+                        <form class="needs-validation" novalidate>
+                            <div class="form-group">
+                                <label for="loginName">Name: *</label>
+                                <input type="text" class="form-control" id="loginName" required>
+                                <div class="invalid-feedback">Please enter a name of no more than 45 characters</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPassword">Password:</label>
+                                <input type="password" class="form-control" id="loginPassword">
+                                <div class="invalid-feedback">Please enter a password of no more than 45 characters</div>
+                                <div class="invalid-feedback-alt d-none">Invalid Password</div>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="loginButton">Log in!</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Description</h5>
+                        <p class="card-text" id="choice-desc">Test</p>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item" id="alt1">
+                <li class="list-group-item d-none" id="alt1">
                     <div class="container">
                         <div class="row">
                             <div class="card col">
@@ -82,15 +90,23 @@
                             </div>
                             <div class="col-0">
                                 <div class="sticky-top">
-                                    <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
-                                    <br>
-                                    <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                    <div>
+                                        <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                        <x-count id="alt1-up-count">0</x-count>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                        <x-count id="alt1-down-count">0</x-count>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </li>
-                <li class="list-group-item" id="alt2">
+                <li class="list-group-item d-none" id="alt2">
                     <div class="container">
                         <div class="row">
                             <div class="card col">
@@ -123,15 +139,23 @@
                             </div>
                             <div class="col-0">
                                 <div class="sticky-top">
-                                    <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
-                                    <br>
-                                    <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                    <div>
+                                        <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                        <x-count id="alt2-up-count">0</x-count>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                        <x-count id="alt2-down-count">0</x-count>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </li>
-                <li class="list-group-item" id="alt3">
+                <li class="list-group-item d-none" id="alt3">
                     <div class="container">
                         <div class="row">
                             <div class="card col">
@@ -164,15 +188,23 @@
                             </div>
                             <div class="col-0">
                                 <div class="sticky-top">
-                                    <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
-                                    <br>
-                                    <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                    <div>
+                                        <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                        <x-count id="alt3-up-count">0</x-count>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                        <x-count id="alt3-down-count">0</x-count>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </li>
-                <li class="list-group-item" id="alt4">
+                <li class="list-group-item d-none" id="alt4">
                     <div class="container">
                         <div class="row">
                             <div class="card col">
@@ -205,15 +237,23 @@
                             </div>
                             <div class="col-0">
                                 <div class="sticky-top">
-                                    <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
-                                    <br>
-                                    <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                    <div>
+                                        <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                        <x-count id="alt4-up-count">0</x-count>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                        <x-count id="alt4-down-count">0</x-count>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </li>
-                <li class="list-group-item" id="alt5">
+                <li class="list-group-item d-none" id="alt5">
                     <div class="container">
                         <div class="row">
                             <div class="card col">
@@ -246,9 +286,17 @@
                             </div>
                             <div class="col-0">
                                 <div class="sticky-top">
-                                    <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
-                                    <br>
-                                    <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                    <div>
+                                        <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                        <x-count id="alt5-up-count">0</x-count>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                        <x-count id="alt5-down-count">0</x-count>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
