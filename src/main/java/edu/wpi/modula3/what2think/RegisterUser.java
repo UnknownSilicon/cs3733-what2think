@@ -13,6 +13,21 @@ public class RegisterUser implements RequestHandler<RegisterRequest, RegisterRes
     LambdaLogger logger;
     DAO dao;
 
+    boolean validateInput(String id, User user){
+        if(id == null || id.equals("")){
+            return false;
+        }
+        else if(user == null){
+            return false;
+        }
+        else if(user.getName() == null || user.getName().equals("")){
+            return false;
+        }
+        else {
+            return user.getPassword() != null;
+        }
+    }
+
     boolean getUser(String id, User user){
         if (logger != null) { logger.log("in getUser"); }
         if (dao == null) {
@@ -53,13 +68,18 @@ public class RegisterUser implements RequestHandler<RegisterRequest, RegisterRes
         String failMessage = "";
 
         try {
-            fail = !getUser(req.getId(), req.getUser());
-            if(fail){
-                fail = !addUser(req.getId(), req.getUser());
+            fail = !validateInput(req.getId(), req.getUser());
+            if(!fail) {
+                fail = !getUser(req.getId(), req.getUser());
+                if (fail) {
+                    fail = !addUser(req.getId(), req.getUser());
+                } else {
+                    fail = !validateUser(req.getId(), req.getUser());
+                    failMessage = "incorrect password";
+                }
             }
             else{
-                fail = !validateUser(req.getId(), req.getUser());
-                failMessage = "incorrect password";
+                failMessage = "invalid input";
             }
         } catch (Exception e) {
             logger.log("Exception!\n" + e.getMessage() + "\n");
