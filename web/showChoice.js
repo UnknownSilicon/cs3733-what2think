@@ -146,7 +146,7 @@ function validateLogin() {
 
     let success = true
 
-    if (name.val().length > 45) {
+    if (name.val().length <= 0 || name.val().length > 45) {
         name.removeClass("is-valid").addClass("is-invalid")
         success = false
     } else {
