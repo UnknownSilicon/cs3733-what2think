@@ -22,7 +22,7 @@
 </nav>
 <div class="container-fluid pt-5">
     <div class="row justify-content-between">
-        <h2 class="col-5 py-3 sticky-top" id="choiceTitle">Choice ####</h2>
+        <h2 class="col-5 py-3 sticky-top" id="choiceTitle">Choice Loading</h2>
         <div class="col-5 py-3 px-4 text-right" id="participant-count">Participants: 0/0</div>
     </div>
     <div class="row">
@@ -33,17 +33,17 @@
                         <h5 class="card-title">Log In</h5>
                         <form class="needs-validation" novalidate>
                             <div class="form-group">
-                                <label for="loginName">Name: *</label>
-                                <input type="text" class="form-control" id="loginName" required>
+                                <label for="login-name">Name: *</label>
+                                <input type="text" class="form-control" id="login-name" required>
                                 <div class="invalid-feedback">Please enter a name of no more than 45 characters</div>
                             </div>
                             <div class="form-group">
-                                <label for="loginPassword">Password:</label>
-                                <input type="password" class="form-control" id="loginPassword">
-                                <div class="invalid-feedback">Please enter a password of no more than 45 characters</div>
-                                <div class="invalid-feedback-alt d-none">Invalid Password</div>
+                                <label for="login-password">Password:</label>
+                                <input type="password" class="form-control" id="login-password">
+                                <div class="invalid-feedback" id="invalid-pw-main">Please enter a password of no more than 45 characters</div>
+                                <div class="d-none" id="invalid-pw-second">Invalid Password</div>
                             </div>
-                            <button type="button" class="btn btn-primary" id="loginButton">Log in!</button>
+                            <button type="button" class="btn btn-primary" id="login-button" disabled>Log in!</button>
                         </form>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                                                     </label>
                                                 </div>
                                                 <div class="col-3 text-right">
-                                                    <button type="button" class="btn btn-primary" id="alt1-post">Post</button>
+                                                    <button disabled type="button" class="btn btn-primary" id="alt1-post">Post</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -91,15 +91,15 @@
                             <div class="col-0">
                                 <div class="sticky-top">
                                     <div>
-                                        <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                        <button disabled class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
                                         <x-count id="alt1-up-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                        <button disabled class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
                                         <x-count id="alt1-down-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                        <button disabled class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
                                                     </label>
                                                 </div>
                                                 <div class="col-3 text-right">
-                                                    <button type="button" class="btn btn-primary" id="alt2-post">Post</button>
+                                                    <button disabled type="button" class="btn btn-primary" id="alt2-post">Post</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -140,15 +140,15 @@
                             <div class="col-0">
                                 <div class="sticky-top">
                                     <div>
-                                        <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                        <button disabled class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
                                         <x-count id="alt2-up-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                        <button disabled class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
                                         <x-count id="alt2-down-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                        <button disabled class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -179,7 +179,7 @@
                                                     </label>
                                                 </div>
                                                 <div class="col-3 text-right">
-                                                    <button type="button" class="btn btn-primary" id="alt3-post">Post</button>
+                                                    <button disabled type="button" class="btn btn-primary" id="alt3-post">Post</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -189,15 +189,15 @@
                             <div class="col-0">
                                 <div class="sticky-top">
                                     <div>
-                                        <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                        <button disabled class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
                                         <x-count id="alt3-up-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                        <button disabled class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
                                         <x-count id="alt3-down-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                        <button disabled class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -228,7 +228,7 @@
                                                     </label>
                                                 </div>
                                                 <div class="col-3 text-right">
-                                                    <button type="button" class="btn btn-primary" id="alt4-post">Post</button>
+                                                    <button disabled type="button" class="btn btn-primary" id="alt4-post">Post</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -238,15 +238,15 @@
                             <div class="col-0">
                                 <div class="sticky-top">
                                     <div>
-                                        <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                        <button disabled class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
                                         <x-count id="alt4-up-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                        <button disabled class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
                                         <x-count id="alt4-down-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                        <button disabled class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -277,7 +277,7 @@
                                                     </label>
                                                 </div>
                                                 <div class="col-3 text-right">
-                                                    <button type="button" class="btn btn-primary" id="alt5-post">Post</button>
+                                                    <button disabled type="button" class="btn btn-primary" id="alt5-post">Post</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -287,15 +287,15 @@
                             <div class="col-0">
                                 <div class="sticky-top">
                                     <div>
-                                        <button class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
+                                        <button disabled class="btn btn-success m-2"><i class="fas fa-thumbs-up"></i></button>
                                         <x-count id="alt5-up-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
+                                        <button disabled class="btn btn-danger m-2"><i class="fas fa-thumbs-down"></i></button>
                                         <x-count id="alt5-down-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                        <button disabled class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
                                     </div>
                                 </div>
                             </div>

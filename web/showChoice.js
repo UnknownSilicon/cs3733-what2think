@@ -1,4 +1,6 @@
 let GET_CHOICE_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice/"
+let LOGIN_URL_START = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice/"
+let LOGIN_URL_END = "/registerUser"
 
 let ALTERNATIVE_LIST = [$("#alt1"), $("#alt2"), $("#alt3"), $("#alt4"), $("#alt5")]
 
@@ -12,6 +14,8 @@ let FEEDBACK_LISTS = [$("#alt1-feedbacks"), $("#alt2-feedbacks"), $("#alt3-feedb
 let CHOICE_TITLE = $("#choiceTitle")[0]
 
 let PARTICIPANT_TAG = $("#participant-count")[0]
+
+let LOGIN_BUTTON = $("#login-button")
 
 let thisChoice;
 
@@ -92,6 +96,7 @@ function loadChoice(choice) {
     let alternatives = choice["alternatives"]
 
     for (let i=0; i<alternatives.length; i++) {
+        if (alternatives[i] === null) continue
         ALTERNATIVE_DESC[i][0].innerText = alternatives[i]["content"]
 
         let approvers_count = alternatives[i]["approvers"].length
@@ -114,6 +119,59 @@ function loadChoice(choice) {
     // TODO: Make completed marker somewhere
 }
 
+function validateLogin() {
+    let name = $("#login-name")
+    let pass = $("#login-password")
+
+    let success = true
+
+    if (name.val().length > 45) {
+        name.removeClass("is-valid").addClass("is-invalid")
+        success = false
+    } else {
+        name.removeClass("is-invalid").addClass("is-valid")
+    }
+
+    if (pass.val().length > 45) {
+        pass.removeClass("is-valid").addClass("is-invalid")
+        $("#invalid-pw-main").addClass("invalid-feedback").removeClass("d-none")
+        $("#invalid-pw-second").addClass("d-none").removeClass("invalid-feedback")
+        success = false
+    } else {
+        pass.removeClass("is-invalid").addClass("is-valid")
+    }
+
+    return success
+}
+
+
+function createUser() {
+    let name = $("#login-name").val()
+    let pass = $("#login-password").val()
+
+    return {
+        user: {
+            "name": name,
+            "password": pass
+        }
+    }
+}
+
+async function login(url, data) {
+    const response = await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'omit',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response.json()
+}
+
 $(document).ready(function (){
     let queryData = parse_query_string(window.location.search.substring(1))
     let id = queryData["id"]
@@ -128,11 +186,40 @@ $(document).ready(function (){
                 if (statusCode === 200) {
                     // Continue loading choice
                     thisChoice = data["choice"]
+                    LOGIN_BUTTON.removeAttr("disabled")
 
                     loadChoice(thisChoice)
                 } else {
                     // Show error message or redirect to 404 page of sorts
                     console.log("Choice does not exist!")
+                }
+            }
+        )
+    }
+})
+
+$(document).on("click", "#login-button", function (e) {
+    // Validate data
+    if (validateLogin()) {
+        LOGIN_BUTTON.html("Loading...")
+
+        let registerRequest = createUser()
+
+        login(LOGIN_URL_START + thisChoice["id"] + LOGIN_URL_END, registerRequest).then(
+            data => {
+                if (data["statusCode"] === 200) {
+                    // Logged in! Enable buttons and change the login card to the logged in card
+                } else {
+                    // Fail! Show error
+                    LOGIN_BUTTON.html("Error!")
+                    LOGIN_BUTTON.removeClass("btn-primary").addClass("btn-danger")
+                    $("#invalid-pw-second").addClass("invalid-feedback").removeClass("d-none")
+                    $("#invalid-pw-main").addClass("d-none").removeClass("invalid-feedback")
+                    $("#login-password").removeClass("is-valid").addClass("is-invalid")
+                    setTimeout(function () {
+                        LOGIN_BUTTON.html("Log In!")
+                        LOGIN_BUTTON.removeClass("btn-danger").addClass("btn-primary")
+                    }, 3000)
                 }
             }
         )
