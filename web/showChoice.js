@@ -119,6 +119,7 @@ $(document).ready(function (){
     let id = queryData["id"]
     if (id === undefined) {
         // Show some sort of error message or redirect to 404 page
+        console.log("Choice is undefined!")
     } else {
         getChoice(id).then(
             data => {
@@ -131,6 +132,7 @@ $(document).ready(function (){
                     loadChoice(thisChoice)
                 } else {
                     // Show error message or redirect to 404 page of sorts
+                    console.log("Choice does not exist!")
                 }
             }
         )
