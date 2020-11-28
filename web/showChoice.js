@@ -225,3 +225,4 @@ $(document).on("click", "#login-button", function (e) {
         )
     }
 })
+// TODO: Implement the rest of logging in, show proper error messages for invalid choice ID, enable and bind other buttons
