@@ -236,7 +236,7 @@ $(document).on("click", "#login-button", function (e) {
 
                     $("#login-card").addClass("d-none")
                     $("#loggedin-card").removeClass("d-none")
-                    $("#logged-in-text").html("Logged In As " + thisUser["name"])
+                    $("#logged-in-text").html("Logged In As <div class=\"text-success\">" + thisUser["name"] + "</div>")
 
                     $(":button").removeAttr("disabled")
                 } else {
@@ -255,4 +255,15 @@ $(document).on("click", "#login-button", function (e) {
         )
     }
 })
-// TODO: Implement the rest of logging in, enable other buttons
+
+$(document).on("click", "#logout-button", function (e) {
+    thisUser = undefined
+
+    LOGIN_BUTTON.html("Log In!")
+    $(":button").attr("disabled", "disabled")
+
+    $("#login-button").removeAttr("disabled")
+
+    $("#login-card").removeClass("d-none")
+    $("#loggedin-card").addClass("d-none")
+})

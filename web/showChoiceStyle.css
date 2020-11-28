@@ -17,3 +17,7 @@ blockquote footer {
 .sticky-top {
     top: 56px;
 }
+
+#logged-in-text {
+    line-height: 150%;
+}
