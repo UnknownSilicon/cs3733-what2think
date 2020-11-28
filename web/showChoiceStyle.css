@@ -5,3 +5,15 @@ blockquote p {
 blockquote footer {
     font-size: 0.6em !important;
 }
+
+#participant-count {
+    font-size: 1.2em !important;
+}
+
+.sticky-top-top{
+    top:56px;
+}
+
+.sticky-top {
+    top: 56px;
+}
