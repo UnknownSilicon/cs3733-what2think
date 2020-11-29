@@ -144,7 +144,7 @@ $(document).on('click', '#createButton', function(e) {
                 buttonSuccess()
 
                 let id = data["choice"]["id"]
-                window.location.href = window.location.origin + "/choice?&id=" + id
+                window.location.href = window.location.origin + "/showChoice?&id=" + id
                 console.log(id)
             } else {
                 buttonError()
