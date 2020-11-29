@@ -67,6 +67,26 @@ public class DAO {
 		}
 	}
 
+	public boolean addFeedback(Feedback feedback) throws Exception {
+		if (feedback.getContent() == null) throw new Exception("No feedback content");
+
+		try {
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + FEEDBACKS_TABLE +
+					" (alternativeID,creatorID,content,timestamp) values(?,?,?,?);");
+			ps.setString(1, feedback.get());
+			ps.setString(2, getUserId(feedback.getUser()));
+			ps.setInt(3, feedback.getMaxUsers());
+			Timestamp ts = new Timestamp(System.currentTimeMillis());
+			ps.setTimestamp(4, ts);
+			ps.executeUpdate();
+
+			return true;
+		} catch (Exception e) {
+			logger.log("Error in addChoice!\n" + e.getMessage() + "\n");
+			throw e;
+		}
+	}
+
 	public boolean addUser(String choiceId, User user) throws Exception {
 		Choice c = getChoice(choiceId);
 		if(c.getUsers().length < c.getMaxUsers()) {
@@ -124,6 +144,25 @@ public class DAO {
 			logger.log("Error in getUser!\n" + e.getMessage() + "\n");
 		}
 		return false;
+	}
+
+	public String getUserId(String choiceId, User user){
+		try{
+			// check choiceID, name, password
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
+					" WHERE choiceID=? AND name=?;");
+			ps.setString(1, choiceId);
+			ps.setString(2, user.getName());
+			ResultSet resultSet = ps.executeQuery();
+
+			resultSet.next();
+
+			return resultSet.getString("userID");
+		}
+		catch(Exception e){
+			logger.log("Error in getUserId!\n" + e.getMessage() + "\n");
+		}
+		return "";
 	}
 
 	public Choice getChoice(String choiceId){
