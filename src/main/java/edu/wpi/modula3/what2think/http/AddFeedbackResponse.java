@@ -2,19 +2,19 @@ package edu.wpi.modula3.what2think.http;
 
 import edu.wpi.modula3.what2think.model.Feedback;
 
-public class CreateFeedbackResponse {
+public class AddFeedbackResponse {
 	Feedback feedback;
 	int statusCode;
 	String error;
 
 
-	public CreateFeedbackResponse(Feedback feedback, int statusCode) {
+	public AddFeedbackResponse(Feedback feedback, int statusCode) {
 		this.feedback = feedback;
 		this.statusCode = statusCode;
 		this.error = "";
 	}
 
-	public CreateFeedbackResponse(int statusCode, String error) {
+	public AddFeedbackResponse(int statusCode, String error) {
 		this.statusCode = statusCode;
 		this.error = error;
 	}
