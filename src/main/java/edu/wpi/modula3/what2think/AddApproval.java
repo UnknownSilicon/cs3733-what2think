@@ -5,16 +5,26 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import edu.wpi.modula3.what2think.db.DAO;
 import edu.wpi.modula3.what2think.http.GenericResponse;
+import edu.wpi.modula3.what2think.http.RegisterResponse;
 import edu.wpi.modula3.what2think.http.VoteRequest;
 import edu.wpi.modula3.what2think.model.AlternativeAction;
 
-public class removeApproval implements RequestHandler<VoteRequest, GenericResponse> {
+public class AddApproval implements RequestHandler<VoteRequest, GenericResponse> {
 
     LambdaLogger logger;
     DAO dao;
 
     boolean validateInput(String id, AlternativeAction act) throws Exception{
+        if (logger != null) { logger.log("in storeChoice"); }
+        if (dao == null) {
+            dao = new DAO(logger);
+            logger.log("Created DAO\n");
+        }
+
         if(id == null || id.equals("")){
+            return false;
+        }
+        else if(act == null){
             return false;
         }
         else if(act.getUser() == null || act.getAlternative() == null){
@@ -32,10 +42,6 @@ public class removeApproval implements RequestHandler<VoteRequest, GenericRespon
         return dao.validateAlternativeAction(id,act);
     }
 
-    boolean delete(String id, AlternativeAction act) throws Exception{
-        return false;
-    }
-
     @Override
     public GenericResponse handleRequest(VoteRequest req, Context context) {
         logger = context.getLogger();
@@ -46,18 +52,23 @@ public class removeApproval implements RequestHandler<VoteRequest, GenericRespon
         String failMessage = "";
 
         try {
+            logger.log("validating input");
             fail = !validateInput(req.getId(), req.getAltAction());
             if(!fail){
-                fail = !dao.voteExists(req.getId(), req.getAltAction());
-                if(!fail){
-                    fail = !dao.deleteVote(req.getId(), req.getAltAction(), true);
+                logger.log("checking for opposite");
+                if(dao.voteExists(req.getId(), req.getAltAction(), false)){
+                    logger.log("deleting opposite");
+                    dao.deleteVote(req.getId(), req.getAltAction(), false);
                 }
-                else{
-                    failMessage = "Approval does not exist";
-                }
+                logger.log("adding vote");
+                fail = !dao.addVote(req.getId(), req.getAltAction(), true);
+            }
+            else{
+                failMessage = "invalid input";
             }
         } catch (Exception e) {
             logger.log("Exception!\n" + e.getMessage() + "\n");
+            e.printStackTrace();
             fail = true;
             failMessage = e.getMessage();
         }
