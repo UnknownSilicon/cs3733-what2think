@@ -7,7 +7,7 @@ public class CreateFeedbackRequest {
 	User user;
 	String content;
 	String timestamp;
-	Alternative alternative;
+	String alternativeId;
 
 	public User getUser() {
 		return user;
@@ -33,18 +33,19 @@ public class CreateFeedbackRequest {
 		this.timestamp = timestamp;
 	}
 
-	public Alternative getAlternative() {
-		return alternative;
+	public String getAlternativeId() {
+		return alternativeId;
 	}
 
-	public void setAlternative(Alternative alternative) {
-		this.alternative = alternative;
+	public void String(Alternative alternative) {
+		this.alternativeId = alternativeId;
 	}
 
-	public CreateFeedbackRequest(User user, String content, String timestamp, Alternative alternative) {
+	public CreateFeedbackRequest(User user, String content, String timestamp, String alternativeId) {
 		this.user = user;
 		this.content = content;
 		this.timestamp = timestamp;
+		this.alternativeId = alternativeId;
 	}
 
 	public CreateFeedbackRequest() {
@@ -58,6 +59,8 @@ public class CreateFeedbackRequest {
 		str += content;
 		str += "\nTimestamp: ";
 		str += timestamp;
+		str += "\nAlternativeId: ";
+		str += alternativeId;
 		str += "\n";
 		return str;
 	}

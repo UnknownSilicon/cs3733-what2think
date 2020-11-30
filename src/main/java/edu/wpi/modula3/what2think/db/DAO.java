@@ -73,16 +73,16 @@ public class DAO {
 		try {
 			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + FEEDBACKS_TABLE +
 					" (alternativeID,creatorID,content,timestamp) values(?,?,?,?);");
-			ps.setString(1, feedback.get());
-			ps.setString(2, getUserId(feedback.getUser()));
-			ps.setInt(3, feedback.getMaxUsers());
+			ps.setString(1, feedback.getAlternativeId());
+			ps.setString(2, getUserId(getChoiceId(feedback.getAlternativeId()), feedback.getUser()));
+			ps.setString(3, feedback.getContent());
 			Timestamp ts = new Timestamp(System.currentTimeMillis());
 			ps.setTimestamp(4, ts);
 			ps.executeUpdate();
 
 			return true;
 		} catch (Exception e) {
-			logger.log("Error in addChoice!\n" + e.getMessage() + "\n");
+			logger.log("Error in addFeedback!\n" + e.getMessage() + "\n");
 			throw e;
 		}
 	}
@@ -161,6 +161,24 @@ public class DAO {
 		}
 		catch(Exception e){
 			logger.log("Error in getUserId!\n" + e.getMessage() + "\n");
+		}
+		return "";
+	}
+
+	public String getChoiceId(String alternativeId){
+		try{
+			// check choiceID, name, password
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
+					" WHERE alternativeID=?;");
+			ps.setString(1, alternativeId);
+			ResultSet resultSet = ps.executeQuery();
+
+			resultSet.next();
+
+			return resultSet.getString("choiceID");
+		}
+		catch(Exception e){
+			logger.log("Error in getChoiceId!\n" + e.getMessage() + "\n");
 		}
 		return "";
 	}
@@ -358,7 +376,7 @@ public class DAO {
 				feedback.setUser(getUser(resultSet.getString("creatorID")));
 				feedback.setContent(resultSet.getString("content"));
 				feedback.setTimestamp(resultSet.getString("timestamp"));
-
+				feedback.setAlternativeId(resultSet.getString("alternativeId"));
 				feedbacks.add(feedback);
 			}
 			if (feedbacks.size() == 0) return new Feedback[0];

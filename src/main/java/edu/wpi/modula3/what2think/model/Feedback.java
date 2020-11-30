@@ -4,14 +4,16 @@ public class Feedback {
 	User user;
 	String content;
 	String timestamp;
+	String alternativeId;
 
 	public Feedback() {
 	}
 
-	public Feedback(User user, String content, String timestamp) {
+	public Feedback(User user, String content, String timestamp, String alternativeId) {
 		this.user = user;
 		this.content = content;
 		this.timestamp = timestamp;
+		this.alternativeId = alternativeId;
 	}
 
 	public User getUser() {
@@ -36,5 +38,13 @@ public class Feedback {
 
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public String getAlternativeId() {
+		return alternativeId;
+	}
+
+	public void setAlternativeId(String alternativeId) {
+		this.alternativeId = alternativeId;
 	}
 }

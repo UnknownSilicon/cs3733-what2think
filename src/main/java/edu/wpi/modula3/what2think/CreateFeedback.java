@@ -48,6 +48,7 @@ public class CreateFeedback implements RequestHandler<CreateFeedbackRequest, Cre
 		feedback.setUser(req.getUser());
 		feedback.setContent(req.getContent());
 		feedback.setTimestamp(req.getTimestamp());
+		feedback.setAlternativeId(req.getAlternativeId());
 
 		logger.log("Storing Feedback in DB\n");
 
