@@ -8,7 +8,7 @@ import edu.wpi.modula3.what2think.http.GenericResponse;
 import edu.wpi.modula3.what2think.http.VoteRequest;
 import edu.wpi.modula3.what2think.model.AlternativeAction;
 
-public class RemoveApproval implements RequestHandler<VoteRequest, GenericResponse> {
+public class RemoveDisapproval implements RequestHandler<VoteRequest, GenericResponse> {
 
     LambdaLogger logger;
     DAO dao;
@@ -55,13 +55,13 @@ public class RemoveApproval implements RequestHandler<VoteRequest, GenericRespon
             fail = !validateInput(req.getId(), req.getAltAction());
             if(!fail){
                 logger.log("checking existence");
-                fail = !dao.voteExists(req.getId(), req.getAltAction(), true);
+                fail = !dao.voteExists(req.getId(), req.getAltAction(), false);
                 if(!fail){
                     logger.log("deleting");
-                    fail = !dao.deleteVote(req.getId(), req.getAltAction(), true);
+                    fail = !dao.deleteVote(req.getId(), req.getAltAction(), false);
                 }
                 else{
-                    failMessage = "Approval does not exist";
+                    failMessage = "Disapproval does not exist";
                 }
             }
             else{

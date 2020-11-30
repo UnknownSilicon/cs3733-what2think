@@ -8,13 +8,13 @@ import edu.wpi.modula3.what2think.http.GenericResponse;
 import edu.wpi.modula3.what2think.http.VoteRequest;
 import edu.wpi.modula3.what2think.model.AlternativeAction;
 
-public class RemoveApproval implements RequestHandler<VoteRequest, GenericResponse> {
+public class AddDisapproval implements RequestHandler<VoteRequest, GenericResponse> {
 
     LambdaLogger logger;
     DAO dao;
 
     boolean validateInput(String id, AlternativeAction act) throws Exception{
-        if (logger != null) { logger.log("in ValidateInput"); }
+        if (logger != null) { logger.log("in validateInput"); }
         if (dao == null) {
             dao = new DAO(logger);
             logger.log("Created DAO\n");
@@ -54,21 +54,20 @@ public class RemoveApproval implements RequestHandler<VoteRequest, GenericRespon
             logger.log("validating input");
             fail = !validateInput(req.getId(), req.getAltAction());
             if(!fail){
-                logger.log("checking existence");
-                fail = !dao.voteExists(req.getId(), req.getAltAction(), true);
-                if(!fail){
-                    logger.log("deleting");
-                    fail = !dao.deleteVote(req.getId(), req.getAltAction(), true);
+                logger.log("checking for opposite");
+                if(dao.voteExists(req.getId(), req.getAltAction(), true)){
+                    logger.log("deleting opposite");
+                    dao.deleteVote(req.getId(), req.getAltAction(), true);
                 }
-                else{
-                    failMessage = "Approval does not exist";
-                }
+                logger.log("adding vote");
+                fail = !dao.addVote(req.getId(), req.getAltAction(), false);
             }
             else{
                 failMessage = "invalid input";
             }
         } catch (Exception e) {
             logger.log("Exception!\n" + e.getMessage() + "\n");
+            e.printStackTrace();
             fail = true;
             failMessage = e.getMessage();
         }

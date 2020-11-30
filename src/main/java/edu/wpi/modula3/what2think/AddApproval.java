@@ -15,7 +15,7 @@ public class AddApproval implements RequestHandler<VoteRequest, GenericResponse>
     DAO dao;
 
     boolean validateInput(String id, AlternativeAction act) throws Exception{
-        if (logger != null) { logger.log("in storeChoice"); }
+        if (logger != null) { logger.log("in validateInput"); }
         if (dao == null) {
             dao = new DAO(logger);
             logger.log("Created DAO\n");
