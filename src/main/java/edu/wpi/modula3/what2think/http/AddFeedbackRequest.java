@@ -3,10 +3,9 @@ package edu.wpi.modula3.what2think.http;
 import edu.wpi.modula3.what2think.model.Alternative;
 import edu.wpi.modula3.what2think.model.User;
 
-public class CreateFeedbackRequest {
+public class AddFeedbackRequest {
 	User user;
 	String content;
-	String timestamp;
 	String alternativeId;
 
 	public User getUser() {
@@ -25,30 +24,21 @@ public class CreateFeedbackRequest {
 		this.content = content;
 	}
 
-	public String getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
-
 	public String getAlternativeId() {
 		return alternativeId;
 	}
 
-	public void String(Alternative alternative) {
+	public void String(String alternativeId) {
 		this.alternativeId = alternativeId;
 	}
 
-	public CreateFeedbackRequest(User user, String content, String timestamp, String alternativeId) {
+	public AddFeedbackRequest(User user, String content, String alternativeId) {
 		this.user = user;
 		this.content = content;
-		this.timestamp = timestamp;
 		this.alternativeId = alternativeId;
 	}
 
-	public CreateFeedbackRequest() {
+	public AddFeedbackRequest() {
 
 	}
 
@@ -57,8 +47,6 @@ public class CreateFeedbackRequest {
 		str += user;
 		str += "\nContent: ";
 		str += content;
-		str += "\nTimestamp: ";
-		str += timestamp;
 		str += "\nAlternativeId: ";
 		str += alternativeId;
 		str += "\n";

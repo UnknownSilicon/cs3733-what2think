@@ -4,17 +4,11 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import edu.wpi.modula3.what2think.db.DAO;
-import edu.wpi.modula3.what2think.http.CreateFeedbackRequest;
-import edu.wpi.modula3.what2think.http.CreateFeedbackResponse;
-import edu.wpi.modula3.what2think.http.CreateRequest;
-import edu.wpi.modula3.what2think.http.CreateResponse;
-import edu.wpi.modula3.what2think.model.Alternative;
+import edu.wpi.modula3.what2think.http.AddFeedbackRequest;
+import edu.wpi.modula3.what2think.http.AddFeedbackResponse;
 import edu.wpi.modula3.what2think.model.Feedback;
 
-import java.util.Arrays;
-import java.util.UUID;
-
-public class CreateFeedback implements RequestHandler<CreateFeedbackRequest, CreateFeedbackResponse> {
+public class AddFeedback implements RequestHandler<AddFeedbackRequest, AddFeedbackResponse> {
 
 	LambdaLogger logger;
 	DAO dao;
@@ -33,7 +27,7 @@ public class CreateFeedback implements RequestHandler<CreateFeedbackRequest, Cre
 	}
 
 	@Override
-	public CreateFeedbackResponse handleRequest(CreateFeedbackRequest req, Context context) {
+	public AddFeedbackResponse handleRequest(AddFeedbackRequest req, Context context) {
 		logger = context.getLogger();
 		logger.log("Loading Java Lambda handler of RequestHandler\n");
 		logger.log(req.toString());
@@ -47,7 +41,6 @@ public class CreateFeedback implements RequestHandler<CreateFeedbackRequest, Cre
 
 		feedback.setUser(req.getUser());
 		feedback.setContent(req.getContent());
-		feedback.setTimestamp(req.getTimestamp());
 		feedback.setAlternativeId(req.getAlternativeId());
 
 		logger.log("Storing Feedback in DB\n");
@@ -63,11 +56,11 @@ public class CreateFeedback implements RequestHandler<CreateFeedbackRequest, Cre
 		logger.log("Creating Response\n");
 		// compute proper response and return. Note that the status code is internal to the HTTP response
 		// and has to be processed specifically by the client code.
-		CreateFeedbackResponse response;
+		AddFeedbackResponse response;
 		if (fail) {
-			response = new CreateFeedbackResponse(400, failMessage);
+			response = new AddFeedbackResponse(400, failMessage);
 		} else {
-			response = new CreateFeedbackResponse(feedback, 200);  // success
+			response = new AddFeedbackResponse(feedback, 200);  // success
 		}
 
 		logger.log("Returning Response\n");
