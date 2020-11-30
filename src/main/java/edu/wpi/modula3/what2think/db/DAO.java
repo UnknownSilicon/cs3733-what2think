@@ -156,13 +156,14 @@ public class DAO {
 		}
 	}
 
-	public boolean voteExists(String choiceId, AlternativeAction act){
+	public boolean voteExists(String choiceId, AlternativeAction act, boolean approve){
 		try {
 			String userID = getUserID(choiceId, act.getUser().getName());
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + VOTES_TABLE +
-					" WHERE alternativeID=? AND userID=?;");
-			ps.setString(1, choiceId);
+					" WHERE alternativeID=? AND userID=? AND approve=?;");
+			ps.setString(1, act.getAlternative().getId());
 			ps.setString(2, userID);
+			ps.setBoolean(3, approve);
 			ResultSet resultSet = ps.executeQuery();
 
 			return resultSet.next();
@@ -173,28 +174,40 @@ public class DAO {
 		return false;
 	}
 
-	public boolean deleteVote(String choiceId, AlternativeAction act, boolean approve) throws Exception{
-		String userID = getUserID(choiceId, act.getUser().getName());
-		PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + VOTES_TABLE +
-				" WHERE alternativeID=? AND userID=? AND approve=?;");
-		ps.setString(1, choiceId);
-		ps.setString(2, userID);
-		ps.setBoolean(3, approve);
-		ResultSet resultSet = ps.executeQuery();
-
-		if(resultSet.next()){
-			ps = conn.prepareStatement("DELETE FROM " + VOTES_TABLE +
+	public boolean deleteVote(String choiceId, AlternativeAction act, boolean approve){
+		try{
+            String userID = getUserID(choiceId, act.getUser().getName());
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM " + VOTES_TABLE +
 					" WHERE alternativeID=? AND userID=? AND approve=?;");
-			ps.setString(1, choiceId);
+			ps.setString(1, act.getAlternative().getId());
 			ps.setString(2, userID);
 			ps.setBoolean(3, approve);
 			ps.executeUpdate();
 			return true;
 		}
-		else{
-			throw new Exception("no such vote");
+		catch(Exception e){
+            logger.log("Error in deleteVote!\n" + e.getMessage() + "\n");
 		}
+		return false;
 	}
+
+	public boolean addVote(String choiceId, AlternativeAction act, boolean approve){
+        try {
+            String userID = getUserID(choiceId, act.getUser().getName());
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO " + VOTES_TABLE +
+                    " (alternativeID,userID,approve) values(?,?,?);");
+            ps.setString(1, act.getAlternative().getId());
+            ps.setString(2, userID);
+            ps.setBoolean(3, approve);
+            ps.executeUpdate();
+
+            return true;
+
+        } catch (Exception e) {
+            logger.log("Error in addUser!\n" + e.getMessage() + "\n");
+        }
+	    return false;
+    }
 
 	public Choice getChoice(String choiceId){
 		Choice choice = new Choice();
