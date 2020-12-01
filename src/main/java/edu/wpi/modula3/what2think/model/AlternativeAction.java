@@ -9,6 +9,10 @@ public class AlternativeAction {
         this.alternative = alternative;
     }
 
+    public AlternativeAction(){
+
+    }
+
     public User getUser() {
         return user;
     }
