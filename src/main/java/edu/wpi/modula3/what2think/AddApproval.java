@@ -5,7 +5,6 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import edu.wpi.modula3.what2think.db.DAO;
 import edu.wpi.modula3.what2think.http.GenericResponse;
-import edu.wpi.modula3.what2think.http.RegisterResponse;
 import edu.wpi.modula3.what2think.http.VoteRequest;
 import edu.wpi.modula3.what2think.model.AlternativeAction;
 
