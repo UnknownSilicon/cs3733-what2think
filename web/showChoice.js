@@ -370,39 +370,52 @@ $(document).on("click", "#logout-button", function (e) {
 
 for (let i=0; i<5; i++) {
     $(document).on("click", ALTERNATIVE_UP_SELECTORS[i], function (e) {
-        // Maybe show some indication that it's loading
         // Approve/Remove approval
+        $(ALTERNATIVE_UP_SELECTORS[i]).html("<i class=\"fas fa-spinner fa-spin\"></i>")
         if (userApproves(i)) {
             // Remove approval
             voteAction(REMOVE_APPROVAL_URL_END, i).then(
                 data => {
-                    getAndLoadAsync(thisChoice["id"]).then(data => {loadUser()})
+                    getAndLoadAsync(thisChoice["id"]).then(data => {
+                        loadUser()
+                        $(ALTERNATIVE_UP_SELECTORS[i]).html("<i class=\"fas fa-thumbs-up\"></i>")
+                    })
                 }
             )
         } else {
             // Add approval
             voteAction(APPROVE_URL_END, i).then(
                 data => {
-                    getAndLoadAsync(thisChoice["id"]).then(data => {loadUser()})
+                    getAndLoadAsync(thisChoice["id"]).then(data => {
+                        loadUser()
+                        $(ALTERNATIVE_UP_SELECTORS[i]).html("<i class=\"fas fa-thumbs-up\"></i>")
+                    })
+
                 }
             )
         }
     })
     $(document).on("click", ALTERNATIVE_DOWN_SELECTORS[i], function (e) {
-        // Maybe show some indication that it's loading
         // Disapprove/Remove disapproval
+        $(ALTERNATIVE_DOWN_SELECTORS[i]).html("<i class=\"fas fa-spinner fa-spin\"></i>")
         if (userDispproves(i)) {
             // Remove disapproval
             voteAction(REMOVE_DISAPPROVAL_URL_END, i).then(
                 data => {
-                    getAndLoadAsync(thisChoice["id"]).then(data => {loadUser()})
+                    getAndLoadAsync(thisChoice["id"]).then(data => {
+                        loadUser()
+                        $(ALTERNATIVE_DOWN_SELECTORS[i]).html("<i class=\"fas fa-thumbs-down\"></i>")
+                    })
                 }
             )
         } else {
             // Add approval
             voteAction(DISAPPROVE_URL_END, i).then(
                 data => {
-                    getAndLoadAsync(thisChoice["id"]).then(data => {loadUser()})
+                    getAndLoadAsync(thisChoice["id"]).then(data => {
+                        loadUser()
+                        $(ALTERNATIVE_DOWN_SELECTORS[i]).html("<i class=\"fas fa-thumbs-down\"></i>")
+                    })
                 }
             )
         }
