@@ -11,6 +11,10 @@ public class VoteRequest {
         this.altAction = altAction;
     }
 
+    public VoteRequest(){
+
+    }
+
     @Override
     public String toString() {
         return "VoteRequest{" + "\n" +
