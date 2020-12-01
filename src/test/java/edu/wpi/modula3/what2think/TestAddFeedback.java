@@ -3,11 +3,8 @@ package edu.wpi.modula3.what2think;
 import edu.wpi.modula3.what2think.http.*;
 import edu.wpi.modula3.what2think.model.Alternative;
 import edu.wpi.modula3.what2think.model.Choice;
-import edu.wpi.modula3.what2think.model.Feedback;
 import edu.wpi.modula3.what2think.model.User;
 import org.junit.jupiter.api.Test;
-
-import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,11 +17,12 @@ public class TestAddFeedback extends LambdaTest {
         String[] alts = new String[]{"abc", "123", "def"};
         CreateRequest createRequest = new CreateRequest("Test1", 5, alts);
         CreateResponse createResponse = cc.handleRequest(createRequest, createContext("createChoice"));
-        String choiceID = createResponse.getChoice().getId();
+        Choice startingChoice = createResponse.getChoice();
+        String choiceID = startingChoice.getId();
 
         assertEquals(200, createResponse.getStatusCode());
         assertEquals("", createResponse.getError());
-        assertNotNull(createResponse.getChoice());
+        assertNotNull(startingChoice);
 
         RegisterUser ru = new RegisterUser();
         User user = new User("test", "ew");
@@ -34,12 +32,20 @@ public class TestAddFeedback extends LambdaTest {
         assertEquals(200, registerResponse.getStatusCode());
 
         AddFeedback af = new AddFeedback();
-        String content = "random content";
-        AddFeedbackRequest addFeedbackRequest = new AddFeedbackRequest(user, content, createResponse.getChoice().getAlternatives()[0].getId());
+        String content = "new random content";
+        AddFeedbackRequest addFeedbackRequest = new AddFeedbackRequest(user, content, startingChoice.getAlternatives()[0].getId());
         AddFeedbackResponse addFeedbackResponse = af.handleRequest(addFeedbackRequest, createContext("addFeedback"));
 
         assertEquals(200, addFeedbackResponse.getStatusCode());
         assertEquals("", addFeedbackResponse.getError());
+
+        AddFeedback af2 = new AddFeedback();
+        String content2 = "second random feedback";
+        AddFeedbackRequest addFeedbackRequest2 = new AddFeedbackRequest(user, content2, startingChoice.getAlternatives()[1].getId());
+        AddFeedbackResponse addFeedbackResponse2 = af.handleRequest(addFeedbackRequest2, createContext("addFeedback"));
+
+        assertEquals(200, addFeedbackResponse2.getStatusCode());
+        assertEquals("", addFeedbackResponse2.getError());
 
         GetChoice gc = new GetChoice();
         GetRequest getRequest = new GetRequest(choiceID);
@@ -50,9 +56,18 @@ public class TestAddFeedback extends LambdaTest {
         assertEquals("", getResponse.getError());
         assertNotNull(choice);
 
-        Feedback feedback1 = choice.getAlternatives()[0].getFeedback()[0];
-
-        System.out.println(feedback1.getContent());
-        assertEquals(feedback1.getContent(), content);
+        Alternative[] alternatives = choice.getAlternatives();
+        for (int i = 0; i < 3; i++) {
+            if (alternatives[i].getContent().equals("abc")) {
+                assertEquals(alternatives[i].getFeedback()[0].getContent(), content);
+                assertEquals(alternatives[i].getFeedback()[0].getUser().getName(), user.getName());
+                assertEquals(alternatives[i].getFeedback()[0].getAlternativeId(), startingChoice.getAlternatives()[0].getId());
+            }
+            if (alternatives[i].getContent().equals("123")) {
+                assertEquals(alternatives[i].getFeedback()[0].getContent(), content2);
+                assertEquals(alternatives[i].getFeedback()[0].getUser().getName(), user.getName());
+                assertEquals(alternatives[i].getFeedback()[0].getAlternativeId(), startingChoice.getAlternatives()[1].getId());
+            }
+        }
     }
 }
