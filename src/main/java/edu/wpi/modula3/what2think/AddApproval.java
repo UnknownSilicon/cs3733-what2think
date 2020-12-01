@@ -60,8 +60,14 @@ public class AddApproval implements RequestHandler<VoteRequest, GenericResponse>
                     logger.log("deleting opposite");
                     dao.deleteVote(req.getId(), req.getAltAction(), false);
                 }
-                logger.log("adding vote");
-                fail = !dao.addVote(req.getId(), req.getAltAction(), true);
+                if(!dao.voteExists(req.getId(), req.getAltAction(), true)) {
+                    logger.log("adding vote");
+                    fail = !dao.addVote(req.getId(), req.getAltAction(), true);
+                }
+                else{
+                    fail = true;
+                    failMessage = "vote already exists";
+                }
             }
             else{
                 failMessage = "invalid input";

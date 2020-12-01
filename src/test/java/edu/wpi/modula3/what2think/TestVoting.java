@@ -35,6 +35,12 @@ public class TestVoting extends LambdaTest{
         assertEquals(200, response.getStatusCode());
 
         req = new VoteRequest(cResponse.getChoice().getId(), act);
+        response = aa.handleRequest(req, createContext("approve"));
+
+        assertEquals(400, response.getStatusCode());
+        assertEquals("vote already exists", response.getError());
+
+        req = new VoteRequest(cResponse.getChoice().getId(), act);
         response = ra.handleRequest(req, createContext("removeApproval"));
 
         assertEquals(200, response.getStatusCode());
@@ -62,6 +68,12 @@ public class TestVoting extends LambdaTest{
         GenericResponse response = ad.handleRequest(req, createContext("disapprove"));
 
         assertEquals(200, response.getStatusCode());
+
+        req = new VoteRequest(cResponse.getChoice().getId(), act);
+        response = ad.handleRequest(req, createContext("disapprove"));
+
+        assertEquals(400, response.getStatusCode());
+        assertEquals("vote already exists", response.getError());
 
         req = new VoteRequest(cResponse.getChoice().getId(), act);
         response = rd.handleRequest(req, createContext("removeDisapproval"));

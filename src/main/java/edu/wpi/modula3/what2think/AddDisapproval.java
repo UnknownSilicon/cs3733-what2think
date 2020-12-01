@@ -59,8 +59,14 @@ public class AddDisapproval implements RequestHandler<VoteRequest, GenericRespon
                     logger.log("deleting opposite");
                     dao.deleteVote(req.getId(), req.getAltAction(), true);
                 }
-                logger.log("adding vote");
-                fail = !dao.addVote(req.getId(), req.getAltAction(), false);
+                if(!dao.voteExists(req.getId(), req.getAltAction(), false)) {
+                    logger.log("adding vote");
+                    fail = !dao.addVote(req.getId(), req.getAltAction(), false);
+                }
+                else{
+                    fail = true;
+                    failMessage = "vote already exists";
+                }
             }
             else{
                 failMessage = "invalid input";
