@@ -1,10 +1,7 @@
 package edu.wpi.modula3.what2think.db;
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import edu.wpi.modula3.what2think.model.Alternative;
-import edu.wpi.modula3.what2think.model.Choice;
-import edu.wpi.modula3.what2think.model.Feedback;
-import edu.wpi.modula3.what2think.model.User;
+import edu.wpi.modula3.what2think.model.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -63,26 +60,6 @@ public class DAO {
 			return true;
 		} catch (Exception e) {
 			logger.log("Error in addChoice!\n" + e.getMessage() + "\n");
-			throw e;
-		}
-	}
-
-	public boolean addFeedback(Feedback feedback) throws Exception {
-		if (feedback.getContent() == null) throw new Exception("No feedback content");
-
-		try {
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + FEEDBACKS_TABLE +
-					" (alternativeID,creatorID,content,timestamp) values(?,?,?,?);");
-			ps.setString(1, feedback.getAlternativeId());
-			ps.setString(2, getUserId(getChoiceId(feedback.getAlternativeId()), feedback.getUser()));
-			ps.setString(3, feedback.getContent());
-			Timestamp ts = new Timestamp(System.currentTimeMillis());
-			ps.setTimestamp(4, ts);
-			ps.executeUpdate();
-
-			return true;
-		} catch (Exception e) {
-			logger.log("Error in addFeedback!\n" + e.getMessage() + "\n");
 			throw e;
 		}
 	}
@@ -146,41 +123,77 @@ public class DAO {
 		return false;
 	}
 
-	public String getUserId(String choiceId, User user){
-		try{
-			// check choiceID, name, password
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
-					" WHERE choiceID=? AND name=?;");
+	public boolean validateAlternativeAction(String choiceId, AlternativeAction act) throws Exception{
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
+				" WHERE choiceID=?;");
+		ps.setString(1, choiceId);
+		ResultSet resultSet = ps.executeQuery();
+		if(resultSet.next()){
+			ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
+					" WHERE choiceID=? AND alternativeID=?;");
 			ps.setString(1, choiceId);
-			ps.setString(2, user.getName());
-			ResultSet resultSet = ps.executeQuery();
-
-			resultSet.next();
-
-			return resultSet.getString("userID");
+			ps.setString(2, act.getAlternative().getId());
+			resultSet = ps.executeQuery();
+			if(resultSet.next()){
+				ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE+
+						" WHERE choiceID=? AND name=?;");
+				ps.setString(1, choiceId);
+				ps.setString(2, act.getUser().getName());
+				resultSet = ps.executeQuery();
+				if(resultSet.next()){
+					return true;
+				}
+				else{
+					throw new Exception("No user with this name in given choice");
+				}
+			}
+			else{
+				throw new Exception("No alternative with this ID in given choice");
+			}
 		}
-		catch(Exception e){
-			logger.log("Error in getUserId!\n" + e.getMessage() + "\n");
+		else {
+			throw new Exception("No choice with this ID");
 		}
-		return "";
 	}
 
-	public String getChoiceId(String alternativeId){
-		try{
-			// check choiceID, name, password
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
-					" WHERE alternativeID=?;");
-			ps.setString(1, alternativeId);
+	public boolean voteExists(String choiceId, AlternativeAction act){
+		try {
+			String userID = getUserID(choiceId, act.getUser().getName());
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + VOTES_TABLE +
+					" WHERE alternativeID=? AND userID=?;");
+			ps.setString(1, choiceId);
+			ps.setString(2, userID);
 			ResultSet resultSet = ps.executeQuery();
 
-			resultSet.next();
+			return resultSet.next();
+		}
+		catch (Exception e){
+			logger.log("Error in voteExists!\n" + e.getMessage() + "\n");
+		}
+		return false;
+	}
 
-			return resultSet.getString("choiceID");
+	public boolean deleteVote(String choiceId, AlternativeAction act, boolean approve) throws Exception{
+		String userID = getUserID(choiceId, act.getUser().getName());
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + VOTES_TABLE +
+				" WHERE alternativeID=? AND userID=? AND approve=?;");
+		ps.setString(1, choiceId);
+		ps.setString(2, userID);
+		ps.setBoolean(3, approve);
+		ResultSet resultSet = ps.executeQuery();
+
+		if(resultSet.next()){
+			ps = conn.prepareStatement("DELETE FROM " + VOTES_TABLE +
+					" WHERE alternativeID=? AND userID=? AND approve=?;");
+			ps.setString(1, choiceId);
+			ps.setString(2, userID);
+			ps.setBoolean(3, approve);
+			ps.executeUpdate();
+			return true;
 		}
-		catch(Exception e){
-			logger.log("Error in getChoiceId!\n" + e.getMessage() + "\n");
+		else{
+			throw new Exception("no such vote");
 		}
-		return "";
 	}
 
 	public Choice getChoice(String choiceId){
@@ -319,6 +332,27 @@ public class DAO {
 		return null;
 	}
 
+	public String getUserID(String choiceID, String username){
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
+					" WHERE choiceID=? AND name=?;");
+			ps.setString(1, choiceID);
+			ps.setString(2, username);
+			ResultSet resultSet = ps.executeQuery();
+
+			if(resultSet.next()){
+				return resultSet.getString("userId");
+			}
+			else{
+				return null;
+			}
+		}
+		catch(Exception e){
+			logger.log("Error in getUserID!\n" + e.getMessage() + "\n");
+		}
+		return null;
+	}
+
 	public User[] getApprovers(String alternativeId){
 		ArrayList<User> users = new ArrayList<>();
 		try{
@@ -389,6 +423,43 @@ public class DAO {
 		return new Feedback[0];
 	}
 
+	public boolean addFeedback(Feedback feedback) throws Exception {
+		if (feedback.getContent() == null) throw new Exception("No feedback content");
+
+		try {
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + FEEDBACKS_TABLE +
+					" (alternativeID,creatorID,content,timestamp) values(?,?,?,?);");
+			ps.setString(1, feedback.getAlternativeId());
+			ps.setString(2, getUserID(getChoiceId(feedback.getAlternativeId()), feedback.getUser().getName()));
+			ps.setString(3, feedback.getContent());
+			Timestamp ts = new Timestamp(System.currentTimeMillis());
+			ps.setTimestamp(4, ts);
+			ps.executeUpdate();
+
+			return true;
+		} catch (Exception e) {
+			logger.log("Error in addFeedback!\n" + e.getMessage() + "\n");
+			throw e;
+		}
+	}
+
+	public String getChoiceId(String alternativeId){
+		try{
+			// check choiceID, name, password
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
+					" WHERE alternativeID=?;");
+			ps.setString(1, alternativeId);
+			ResultSet resultSet = ps.executeQuery();
+
+			resultSet.next();
+
+			return resultSet.getString("choiceID");
+		}
+		catch(Exception e){
+			logger.log("Error in getChoiceId!\n" + e.getMessage() + "\n");
+		}
+		return "";
+	}
 
 	/*public Constant getConstant(String name) throws Exception {
 
