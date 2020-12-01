@@ -123,10 +123,22 @@ public class TestVoting extends LambdaTest{
     }
 
     @Test
-    public void testInvalidMain(){
+    public void testInvalidAddApproval(){
         testInvalid(new AddApproval(), "approve");
+    }
+
+    @Test
+    public void testInvalidAddDispproval(){
         testInvalid(new AddDisapproval(), "disapprove");
+    }
+
+    @Test
+    public void testInvalidRemoveApproval(){
         testInvalid(new RemoveApproval(), "removeApproval");
+    }
+
+    @Test
+    public void testInvalidRemoveDisapproval(){
         testInvalid(new RemoveDisapproval(), "removeDisapproval");
     }
 
