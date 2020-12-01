@@ -1,0 +1,13 @@
+.hideArrows::-webkit-outer-spin-button,
+.hideArrows::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.hideArrows[type=number] {
+    -moz-appearance: textfield;
+}
+
+textarea {
+    resize: none
+}
