@@ -1,10 +1,7 @@
 package edu.wpi.modula3.what2think.db;
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import edu.wpi.modula3.what2think.model.Alternative;
-import edu.wpi.modula3.what2think.model.Choice;
-import edu.wpi.modula3.what2think.model.Feedback;
-import edu.wpi.modula3.what2think.model.User;
+import edu.wpi.modula3.what2think.model.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -125,6 +122,92 @@ public class DAO {
 		}
 		return false;
 	}
+
+	public boolean validateAlternativeAction(String choiceId, AlternativeAction act) throws Exception{
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
+				" WHERE choiceID=?;");
+		ps.setString(1, choiceId);
+		ResultSet resultSet = ps.executeQuery();
+		if(resultSet.next()){
+			ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
+					" WHERE choiceID=? AND alternativeID=?;");
+			ps.setString(1, choiceId);
+			ps.setString(2, act.getAlternative().getId());
+			resultSet = ps.executeQuery();
+			if(resultSet.next()){
+				ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE+
+						" WHERE choiceID=? AND name=?;");
+				ps.setString(1, choiceId);
+				ps.setString(2, act.getUser().getName());
+				resultSet = ps.executeQuery();
+				if(resultSet.next()){
+					return true;
+				}
+				else{
+					throw new Exception("No user with this name in given choice");
+				}
+			}
+			else{
+				throw new Exception("No alternative with this ID in given choice");
+			}
+		}
+		else {
+			throw new Exception("No choice with this ID");
+		}
+	}
+
+	public boolean voteExists(String choiceId, AlternativeAction act, boolean approve){
+		try {
+			String userID = getUserID(choiceId, act.getUser().getName());
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + VOTES_TABLE +
+					" WHERE alternativeID=? AND userID=? AND approve=?;");
+			ps.setString(1, act.getAlternative().getId());
+			ps.setString(2, userID);
+			ps.setBoolean(3, approve);
+			ResultSet resultSet = ps.executeQuery();
+
+			return resultSet.next();
+		}
+		catch (Exception e){
+			logger.log("Error in voteExists!\n" + e.getMessage() + "\n");
+		}
+		return false;
+	}
+
+	public boolean deleteVote(String choiceId, AlternativeAction act, boolean approve){
+		try{
+            String userID = getUserID(choiceId, act.getUser().getName());
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM " + VOTES_TABLE +
+					" WHERE alternativeID=? AND userID=? AND approve=?;");
+			ps.setString(1, act.getAlternative().getId());
+			ps.setString(2, userID);
+			ps.setBoolean(3, approve);
+			ps.executeUpdate();
+			return true;
+		}
+		catch(Exception e){
+            logger.log("Error in deleteVote!\n" + e.getMessage() + "\n");
+		}
+		return false;
+	}
+
+	public boolean addVote(String choiceId, AlternativeAction act, boolean approve){
+        try {
+            String userID = getUserID(choiceId, act.getUser().getName());
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO " + VOTES_TABLE +
+                    " (alternativeID,userID,approve) values(?,?,?);");
+            ps.setString(1, act.getAlternative().getId());
+            ps.setString(2, userID);
+            ps.setBoolean(3, approve);
+            ps.executeUpdate();
+
+            return true;
+
+        } catch (Exception e) {
+            logger.log("Error in addUser!\n" + e.getMessage() + "\n");
+        }
+	    return false;
+    }
 
 	public Choice getChoice(String choiceId){
 		Choice choice = new Choice();
@@ -258,6 +341,27 @@ public class DAO {
 		}
 		catch(Exception e){
 			logger.log("Error in getUser!\n" + e.getMessage() + "\n");
+		}
+		return null;
+	}
+
+	public String getUserID(String choiceID, String username){
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
+					" WHERE choiceID=? AND name=?;");
+			ps.setString(1, choiceID);
+			ps.setString(2, username);
+			ResultSet resultSet = ps.executeQuery();
+
+			if(resultSet.next()){
+				return resultSet.getString("userId");
+			}
+			else{
+				return null;
+			}
+		}
+		catch(Exception e){
+			logger.log("Error in getUserID!\n" + e.getMessage() + "\n");
 		}
 		return null;
 	}
