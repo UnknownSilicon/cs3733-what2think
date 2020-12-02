@@ -394,9 +394,9 @@ public class DAO {
 			ps.setString(1, alternativeId);
 			ResultSet resultSet = ps.executeQuery();
 
-			resultSet.next();
-
-			return resultSet.getString("choiceID");
+			while (resultSet.next()) {
+				return resultSet.getString("choiceID");
+			}
 		}
 		catch(Exception e){
 			logger.log("Error in getChoiceId!\n" + e.getMessage() + "\n");
@@ -477,7 +477,11 @@ public class DAO {
 	public boolean completeChoice(String choiceId, Alternative alternative) throws Exception{
 		try {
 			String alternativeId = alternative.getId();
-			Choice choice = getChoice(getChoiceIdFromAlternativeId(alternativeId));
+			if (getAlternative(alternativeId) == null) {
+				logger.log("Alternative: " + alternativeId + " does not exist!\n");
+				return false;
+			}
+			Choice choice = getChoice(getChoiceId(alternativeId));
 			boolean validAlt = false;
 			for (Alternative alt : choice.getAlternatives()) {
 				if (alt.getId().equals(alternativeId)) {
@@ -507,26 +511,6 @@ public class DAO {
 			logger.log("Error in completeChoice!\n" + e.getMessage() + "\n");
 		}
 		return false;
-	}
-
-	public String getChoiceIdFromAlternativeId(String alternativeId){
-		try{
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
-					" WHERE alternativeId=?;");
-			ps.setString(1, alternativeId);
-			ResultSet resultSet = ps.executeQuery();
-
-			if(resultSet.next()){
-				return resultSet.getString("choiceID");
-			}
-			else{
-				return null;
-			}
-		}
-		catch(Exception e){
-			logger.log("Error in getChoiceIdFromAlternativeId!\n" + e.getMessage() + "\n");
-		}
-		return null;
 	}
 
 
