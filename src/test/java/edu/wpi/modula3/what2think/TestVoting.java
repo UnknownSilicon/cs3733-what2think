@@ -25,7 +25,7 @@ public class TestVoting extends LambdaTest{
         CreateResponse cResponse = cc.handleRequest(cRequest, createContext("createChoice"));
 
         RegisterRequest rReq = new RegisterRequest(cResponse.getChoice().getId(), user);
-        RegisterResponse rResponse = ru.handleRequest(rReq, createContext("registerUser"));
+        GenericResponse rResponse = ru.handleRequest(rReq, createContext("registerUser"));
 
         AlternativeAction act = new AlternativeAction(user, cResponse.getChoice().getAlternatives()[1]);
 
@@ -60,7 +60,7 @@ public class TestVoting extends LambdaTest{
         CreateResponse cResponse = cc.handleRequest(cRequest, createContext("createChoice"));
 
         RegisterRequest rReq = new RegisterRequest(cResponse.getChoice().getId(), user);
-        RegisterResponse rResponse = ru.handleRequest(rReq, createContext("registerUser"));
+        GenericResponse rResponse = ru.handleRequest(rReq, createContext("registerUser"));
 
         AlternativeAction act = new AlternativeAction(user, cResponse.getChoice().getAlternatives()[1]);
 
@@ -97,7 +97,7 @@ public class TestVoting extends LambdaTest{
         CreateResponse cResponse = cc.handleRequest(cRequest, createContext("createChoice"));
 
         RegisterRequest rReq = new RegisterRequest(cResponse.getChoice().getId(), user);
-        RegisterResponse rResponse = ru.handleRequest(rReq, createContext("registerUser"));
+        GenericResponse rResponse = ru.handleRequest(rReq, createContext("registerUser"));
 
         AlternativeAction act = new AlternativeAction(user, cResponse.getChoice().getAlternatives()[1]);
 
@@ -165,7 +165,7 @@ public class TestVoting extends LambdaTest{
         CreateResponse cResponse = cc.handleRequest(cRequest, createContext("createChoice"));
 
         RegisterRequest rReq = new RegisterRequest(cResponse.getChoice().getId(), user);
-        RegisterResponse rResponse = ru.handleRequest(rReq, createContext("registerUser"));
+        GenericResponse rResponse = ru.handleRequest(rReq, createContext("registerUser"));
 
         AlternativeAction act = new AlternativeAction(user, cResponse.getChoice().getAlternatives()[1]);
 
@@ -291,7 +291,7 @@ public class TestVoting extends LambdaTest{
         CreateResponse cResponse = cc.handleRequest(cRequest, createContext("createChoice"));
 
         RegisterRequest rReq = new RegisterRequest(cResponse.getChoice().getId(), user);
-        RegisterResponse rResponse = ru.handleRequest(rReq, createContext("registerUser"));
+        GenericResponse rResponse = ru.handleRequest(rReq, createContext("registerUser"));
 
         AlternativeAction act = new AlternativeAction(user, cResponse.getChoice().getAlternatives()[1]);
 
