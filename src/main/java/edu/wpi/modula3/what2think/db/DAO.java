@@ -436,6 +436,27 @@ public class DAO {
 		return new Feedback[0];
 	}
 
+	public boolean completeChoice(String choiceId, Alternative alternative) throws Exception{
+		try {
+			String alternativeId = alternative.getId();
+			PreparedStatement ps = conn.prepareStatement("UPDATE " + CHOICES_TABLE +
+					"SET completionTime=?, chosenAlternativeID=?" +
+					"WHERE choiceID=?;");
+
+			Timestamp ts = new Timestamp(System.currentTimeMillis());
+			ps.setTimestamp(1, ts);
+			ps.setString(2, alternativeId);
+			ps.setString(3, choiceId);
+			ps.executeUpdate();
+
+			return true;
+
+		} catch (Exception e) {
+			logger.log("Error in completeChoice!\n" + e.getMessage() + "\n");
+		}
+		return false;
+	}
+
 
 	/*public Constant getConstant(String name) throws Exception {
 
