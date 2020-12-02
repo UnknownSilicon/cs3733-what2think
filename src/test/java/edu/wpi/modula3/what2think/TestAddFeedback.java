@@ -21,31 +21,28 @@ public class TestAddFeedback extends LambdaTest {
         String choiceID = startingChoice.getId();
 
         assertEquals(200, createResponse.getStatusCode());
-        assertEquals("", createResponse.getError());
         assertNotNull(startingChoice);
 
         RegisterUser ru = new RegisterUser();
         User user = new User("test", "ew");
         RegisterRequest registerRequest = new RegisterRequest(choiceID, user);
-        RegisterResponse registerResponse = ru.handleRequest(registerRequest, createContext("registerUser"));
+        GenericResponse registerResponse = ru.handleRequest(registerRequest, createContext("registerUser"));
 
         assertEquals(200, registerResponse.getStatusCode());
 
         AddFeedback af = new AddFeedback();
         String content = "new random content";
         AddFeedbackRequest addFeedbackRequest = new AddFeedbackRequest(user, content, startingChoice.getAlternatives()[0].getId());
-        AddFeedbackResponse addFeedbackResponse = af.handleRequest(addFeedbackRequest, createContext("addFeedback"));
+        GenericResponse addFeedbackResponse = af.handleRequest(addFeedbackRequest, createContext("addFeedback"));
 
         assertEquals(200, addFeedbackResponse.getStatusCode());
-        assertEquals("", addFeedbackResponse.getError());
 
         AddFeedback af2 = new AddFeedback();
         String content2 = "second random feedback";
         AddFeedbackRequest addFeedbackRequest2 = new AddFeedbackRequest(user, content2, startingChoice.getAlternatives()[1].getId());
-        AddFeedbackResponse addFeedbackResponse2 = af.handleRequest(addFeedbackRequest2, createContext("addFeedback"));
+        GenericResponse addFeedbackResponse2 = af2.handleRequest(addFeedbackRequest2, createContext("addFeedback"));
 
         assertEquals(200, addFeedbackResponse2.getStatusCode());
-        assertEquals("", addFeedbackResponse2.getError());
 
         GetChoice gc = new GetChoice();
         GetRequest getRequest = new GetRequest(choiceID);
@@ -53,7 +50,6 @@ public class TestAddFeedback extends LambdaTest {
         Choice choice = getResponse.getChoice();
 
         assertEquals(200, getResponse.getStatusCode());
-        assertEquals("", getResponse.getError());
         assertNotNull(choice);
 
         Alternative[] alternatives = choice.getAlternatives();

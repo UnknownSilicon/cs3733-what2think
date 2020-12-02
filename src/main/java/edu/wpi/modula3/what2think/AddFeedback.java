@@ -5,10 +5,10 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import edu.wpi.modula3.what2think.db.DAO;
 import edu.wpi.modula3.what2think.http.AddFeedbackRequest;
-import edu.wpi.modula3.what2think.http.AddFeedbackResponse;
+import edu.wpi.modula3.what2think.http.GenericResponse;
 import edu.wpi.modula3.what2think.model.Feedback;
 
-public class AddFeedback implements RequestHandler<AddFeedbackRequest, AddFeedbackResponse> {
+public class AddFeedback implements RequestHandler<AddFeedbackRequest, GenericResponse> {
 
 	LambdaLogger logger;
 	DAO dao;
@@ -27,14 +27,14 @@ public class AddFeedback implements RequestHandler<AddFeedbackRequest, AddFeedba
 	}
 
 	@Override
-	public AddFeedbackResponse handleRequest(AddFeedbackRequest req, Context context) {
+	public GenericResponse handleRequest(AddFeedbackRequest req, Context context) {
 		logger = context.getLogger();
 		logger.log("Loading Java Lambda handler of RequestHandler\n");
 		logger.log(req.toString());
 
 		Feedback feedback = new Feedback();
 
-		boolean fail = false;
+		boolean fail;
 		String failMessage = "";
 
 		logger.log("Creating Feedback\n");
@@ -56,11 +56,11 @@ public class AddFeedback implements RequestHandler<AddFeedbackRequest, AddFeedba
 		logger.log("Creating Response\n");
 		// compute proper response and return. Note that the status code is internal to the HTTP response
 		// and has to be processed specifically by the client code.
-		AddFeedbackResponse response;
+		GenericResponse response;
 		if (fail) {
-			response = new AddFeedbackResponse(400, failMessage);
+			response = new GenericResponse(400, failMessage);
 		} else {
-			response = new AddFeedbackResponse(feedback, 200);  // success
+			response = new GenericResponse(200);  // success
 		}
 
 		logger.log("Returning Response\n");
