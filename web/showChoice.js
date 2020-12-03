@@ -110,6 +110,21 @@ function loadChoice(choice) {
         let approvers_count = alternatives[i]["approvers"].length
         let disapprovers_count = alternatives[i]["disapprovers"].length
 
+        let approversText = ""
+        let disapproversText = ""
+
+        for (let a of alternatives[i]["approvers"]) {
+            approversText += a["name"] + ","
+        }
+        approversText = approversText.substring(0, approversText.length-1)
+        $(ALTERNATIVE_UP_SELECTORS[i]).attr("data-content", approversText)
+
+        for (let d of alternatives[i]["disapprovers"]) {
+            disapproversText += d["name"] + ","
+        }
+        disapproversText = disapproversText.substring(0, disapproversText.length-1)
+        $(ALTERNATIVE_DOWN_SELECTORS[i]).attr("data-content", disapproversText)
+
         ALTERNATIVE_UP_COUNT[i][0].innerText = approvers_count
         ALTERNATIVE_DOWN_COUNT[i][0].innerText = disapprovers_count
 
@@ -225,6 +240,7 @@ function loadUser() {
     $("#loggedin-card").removeClass("d-none")
     $("#logged-in-text").html("Logged In As <div class=\"text-success\">" + thisUser["name"] + "</div>")
 
+
     for (let i=0; i<5; i++) {
         if (thisChoice["alternatives"][i] == null) continue
 
@@ -239,6 +255,7 @@ function loadUser() {
                 isApprover = true
             }
         }
+
         if (!isApprover) {
             $(ALTERNATIVE_UP_SELECTORS[i]).removeClass("btn-success").addClass("btn-secondary")
         }
@@ -249,7 +266,9 @@ function loadUser() {
                 $(ALTERNATIVE_DOWN_SELECTORS[i]).removeClass("btn-secondary").addClass("btn-danger")
                 isDisapprover = true
             }
+
         }
+
         if (!isDisapprover) $(ALTERNATIVE_DOWN_SELECTORS[i]).removeClass("btn-danger").addClass("btn-secondary")
     }
 
@@ -321,6 +340,8 @@ $(document).ready(function (){
     } else {
         getAndLoadChoice(id)
     }
+
+    $('[data-toggle="popover"]').popover()
 })
 
 $(document).on("click", "#login-button", function (e) {
