@@ -28,7 +28,7 @@ public class AddFeedbackRequest {
 		return alternativeId;
 	}
 
-	public void String(String alternativeId) {
+	public void setAlternativeId(String alternativeId) {
 		this.alternativeId = alternativeId;
 	}
 
