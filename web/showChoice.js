@@ -1,13 +1,20 @@
 let GET_CHOICE_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice/"
-let LOGIN_URL_START = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice/"
+let CHOICE_ACTION_URL_START = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/choice/"
 let LOGIN_URL_END = "/registerUser"
+let APPROVE_URL_END = "/approve"
+let REMOVE_APPROVAL_URL_END = "/removeApproval"
+let DISAPPROVE_URL_END = "/disapprove"
+let REMOVE_DISAPPROVAL_URL_END = "/removeDisapproval"
 
 let ALTERNATIVE_LIST = [$("#alt1"), $("#alt2"), $("#alt3"), $("#alt4"), $("#alt5")]
 
 let ALTERNATIVE_DESC = [$('#alt1-desc'), $('#alt2-desc'), $('#alt3-desc'), $('#alt4-desc'), $('#alt5-desc')]
 
-let ALTERNATIVE_UP = [$("#alt1-up-count"), $("#alt2-up-count"), $("#alt3-up-count"), $("#alt4-up-count"), $("#alt5-up-count")]
-let ALTERNATIVE_DOWN = [$("#alt1-down-count"), $("#alt2-down-count"), $("#alt3-down-count"), $("#alt4-down-count"), $("#alt5-down-count")]
+let ALTERNATIVE_UP_COUNT = [$("#alt1-up-count"), $("#alt2-up-count"), $("#alt3-up-count"), $("#alt4-up-count"), $("#alt5-up-count")]
+let ALTERNATIVE_DOWN_COUNT = [$("#alt1-down-count"), $("#alt2-down-count"), $("#alt3-down-count"), $("#alt4-down-count"), $("#alt5-down-count")]
+
+let ALTERNATIVE_UP_SELECTORS = ["#alt1-up", "#alt2-up", "#alt3-up", "#alt4-up", "#alt5-up"]
+let ALTERNATIVE_DOWN_SELECTORS = ["#alt1-down", "#alt2-down", "#alt3-down", "#alt4-down", "#alt5-down"]
 
 let FEEDBACK_LISTS = [$("#alt1-feedbacks"), $("#alt2-feedbacks"), $("#alt3-feedbacks"), $("#alt4-feedbacks"), $("#alt5-feedbacks")]
 
@@ -103,8 +110,23 @@ function loadChoice(choice) {
         let approvers_count = alternatives[i]["approvers"].length
         let disapprovers_count = alternatives[i]["disapprovers"].length
 
-        ALTERNATIVE_UP[i][0].innerText = approvers_count
-        ALTERNATIVE_DOWN[i][0].innerText = disapprovers_count
+        let approversText = "Voters: "
+        let disapproversText = "Voters: "
+
+        for (let a of alternatives[i]["approvers"]) {
+            approversText += a["name"] + ", "
+        }
+        approversText = approversText.substring(0, approversText.length-2)
+        $(ALTERNATIVE_UP_SELECTORS[i]).attr("data-content", approversText)
+
+        for (let d of alternatives[i]["disapprovers"]) {
+            disapproversText += d["name"] + ", "
+        }
+        disapproversText = disapproversText.substring(0, disapproversText.length-2)
+        $(ALTERNATIVE_DOWN_SELECTORS[i]).attr("data-content", disapproversText)
+
+        ALTERNATIVE_UP_COUNT[i][0].innerText = approvers_count
+        ALTERNATIVE_DOWN_COUNT[i][0].innerText = disapprovers_count
 
         let feedbacks = alternatives[i]["feedback"]
 
@@ -120,8 +142,8 @@ function loadChoice(choice) {
     // TODO: Make completed marker somewhere
 }
 
-function getAndLoadChoice(id) {
-    getChoice(id).then(
+async function getAndLoadAsync(id) {
+    return getChoice(id).then(
         data => {
             let statusCode = data["statusCode"]
 
@@ -136,8 +158,13 @@ function getAndLoadChoice(id) {
                 console.log("Choice does not exist!")
                 showInvalidChoice()
             }
+            console.log("Done loading choice")
         }
     )
+}
+
+function getAndLoadChoice(id) {
+   getAndLoadAsync(id).then()
 }
 
 function validateLogin() {
@@ -207,6 +234,102 @@ function hideDescription() {
     $("#description-card").addClass("d-none")
 }
 
+function loadUser() {
+    console.log("Loading user")
+    $("#login-card").addClass("d-none")
+    $("#loggedin-card").removeClass("d-none")
+    $("#logged-in-text").html("Logged In As <div class=\"text-success\">" + thisUser["name"] + "</div>")
+
+
+    for (let i=0; i<5; i++) {
+        if (thisChoice["alternatives"][i] == null) continue
+
+        let approvers = thisChoice["alternatives"][i]["approvers"]
+        let disapprovers = thisChoice["alternatives"][i]["disapprovers"]
+
+        let isApprover = false
+        for (let a of approvers) {
+            if (a["name"] === thisUser["name"]) {
+                // User approves this alternative
+                $(ALTERNATIVE_UP_SELECTORS[i]).removeClass("btn-secondary").addClass("btn-success")
+                isApprover = true
+            }
+        }
+
+        if (!isApprover) {
+            $(ALTERNATIVE_UP_SELECTORS[i]).removeClass("btn-success").addClass("btn-secondary")
+        }
+
+        let isDisapprover = false
+        for (let d of disapprovers) {
+            if (d["name"] === thisUser["name"]) {
+                $(ALTERNATIVE_DOWN_SELECTORS[i]).removeClass("btn-secondary").addClass("btn-danger")
+                isDisapprover = true
+            }
+
+        }
+
+        if (!isDisapprover) $(ALTERNATIVE_DOWN_SELECTORS[i]).removeClass("btn-danger").addClass("btn-secondary")
+    }
+
+    $(":button").removeAttr("disabled")
+}
+
+function userApproves(altIndex) {
+    let alt = thisChoice["alternatives"][altIndex]
+
+    if (alt != null) {
+        for (let a of alt["approvers"]) {
+            if (a["name"] === thisUser["name"]) {
+                return true
+            }
+        }
+    }
+    return false
+}
+
+function userDispproves(altIndex) {
+    let alt = thisChoice["alternatives"][altIndex]
+
+    if (alt != null) {
+        for (let a of alt["disapprovers"]) {
+            if (a["name"] === thisUser["name"]) {
+                return true
+            }
+        }
+    }
+    return false
+}
+
+async function voteAction(url, altIndex) {
+    let alt = thisChoice["alternatives"][altIndex]
+
+    let data = {
+        "altAction": {
+            "user": thisUser,
+            "alternative": alt
+        }
+    }
+
+    console.log(data)
+
+    if (alt != null) {
+        const response = await fetch(CHOICE_ACTION_URL_START + thisChoice["id"] + url, {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'omit',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+
+        return response.json()
+    }
+    return null
+}
+
 $(document).ready(function (){
     let queryData = parse_query_string(window.location.search.substring(1))
     let id = queryData["id"]
@@ -217,6 +340,8 @@ $(document).ready(function (){
     } else {
         getAndLoadChoice(id)
     }
+
+    $('[data-toggle="popover"]').popover()
 })
 
 $(document).on("click", "#login-button", function (e) {
@@ -226,7 +351,7 @@ $(document).on("click", "#login-button", function (e) {
 
         let registerRequest = createUser()
 
-        login(LOGIN_URL_START + thisChoice["id"] + LOGIN_URL_END, registerRequest).then(
+        login(CHOICE_ACTION_URL_START + thisChoice["id"] + LOGIN_URL_END, registerRequest).then(
             data => {
                 if (data["statusCode"] === 200) {
                     // Logged in! Enable buttons and change the login card to the logged in card
@@ -234,11 +359,7 @@ $(document).on("click", "#login-button", function (e) {
 
                     getAndLoadChoice(thisChoice["id"])
 
-                    $("#login-card").addClass("d-none")
-                    $("#loggedin-card").removeClass("d-none")
-                    $("#logged-in-text").html("Logged In As <div class=\"text-success\">" + thisUser["name"] + "</div>")
-
-                    $(":button").removeAttr("disabled")
+                    loadUser()
                 } else {
                     // Fail! Show error
                     LOGIN_BUTTON.html("Error!")
@@ -267,3 +388,59 @@ $(document).on("click", "#logout-button", function (e) {
     $("#login-card").removeClass("d-none")
     $("#loggedin-card").addClass("d-none")
 })
+
+for (let i=0; i<5; i++) {
+    $(document).on("click", ALTERNATIVE_UP_SELECTORS[i], function (e) {
+        // Approve/Remove approval
+        $(ALTERNATIVE_UP_SELECTORS[i]).html("<i class=\"fas fa-spinner fa-spin\"></i>")
+        if (userApproves(i)) {
+            // Remove approval
+            voteAction(REMOVE_APPROVAL_URL_END, i).then(
+                data => {
+                    getAndLoadAsync(thisChoice["id"]).then(data => {
+                        loadUser()
+                        $(ALTERNATIVE_UP_SELECTORS[i]).html("<i class=\"fas fa-thumbs-up\"></i>")
+                    })
+                }
+            )
+        } else {
+            // Add approval
+            voteAction(APPROVE_URL_END, i).then(
+                data => {
+                    getAndLoadAsync(thisChoice["id"]).then(data => {
+                        loadUser()
+                        $(ALTERNATIVE_UP_SELECTORS[i]).html("<i class=\"fas fa-thumbs-up\"></i>")
+                    })
+
+                }
+            )
+        }
+    })
+    $(document).on("click", ALTERNATIVE_DOWN_SELECTORS[i], function (e) {
+        // Disapprove/Remove disapproval
+        $(ALTERNATIVE_DOWN_SELECTORS[i]).html("<i class=\"fas fa-spinner fa-spin\"></i>")
+        if (userDispproves(i)) {
+            // Remove disapproval
+            voteAction(REMOVE_DISAPPROVAL_URL_END, i).then(
+                data => {
+                    getAndLoadAsync(thisChoice["id"]).then(data => {
+                        loadUser()
+                        $(ALTERNATIVE_DOWN_SELECTORS[i]).html("<i class=\"fas fa-thumbs-down\"></i>")
+                    })
+                }
+            )
+        } else {
+            // Add approval
+            voteAction(DISAPPROVE_URL_END, i).then(
+                data => {
+                    getAndLoadAsync(thisChoice["id"]).then(data => {
+                        loadUser()
+                        $(ALTERNATIVE_DOWN_SELECTORS[i]).html("<i class=\"fas fa-thumbs-down\"></i>")
+                    })
+                }
+            )
+        }
+        getAndLoadChoice(thisChoice["id"])
+        loadUser()
+    })
+}
