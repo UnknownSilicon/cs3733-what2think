@@ -5,6 +5,7 @@ let APPROVE_URL_END = "/approve"
 let REMOVE_APPROVAL_URL_END = "/removeApproval"
 let DISAPPROVE_URL_END = "/disapprove"
 let REMOVE_DISAPPROVAL_URL_END = "/removeDisapproval"
+let ADD_FEEDBACK_URL_END = "/addFeedback"
 
 let ALTERNATIVE_LIST = [$("#alt1"), $("#alt2"), $("#alt3"), $("#alt4"), $("#alt5")]
 
@@ -17,6 +18,10 @@ let ALTERNATIVE_UP_SELECTORS = ["#alt1-up", "#alt2-up", "#alt3-up", "#alt4-up", 
 let ALTERNATIVE_DOWN_SELECTORS = ["#alt1-down", "#alt2-down", "#alt3-down", "#alt4-down", "#alt5-down"]
 
 let FEEDBACK_LISTS = [$("#alt1-feedbacks"), $("#alt2-feedbacks"), $("#alt3-feedbacks"), $("#alt4-feedbacks"), $("#alt5-feedbacks")]
+
+let FEEDBACK_INPUTS = [$("#alt1-text"), $("#alt2-text"), $("#alt3-text"), $("#alt4-text"), $("#alt5-text")]
+
+let FEEDBACK_POST_SELECTORS = ["#alt1-post", "#alt2-post", "#alt3-post", "#alt4-post", "#alt5-post"]
 
 let CHOICE_TITLE = $("#choiceTitle")[0]
 
@@ -330,6 +335,27 @@ async function voteAction(url, altIndex) {
     return null
 }
 
+async function postFunction(choiceId, altId, content, user) {
+    let data = {
+        "alternativeId": altId,
+        "user": user,
+        "content": content
+    }
+
+    const response = await fetch(CHOICE_ACTION_URL_START + choiceId + ADD_FEEDBACK_URL_END, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'omit',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response.json()
+}
+
 $(document).ready(function (){
     let queryData = parse_query_string(window.location.search.substring(1))
     let id = queryData["id"]
@@ -442,5 +468,26 @@ for (let i=0; i<5; i++) {
         }
         getAndLoadChoice(thisChoice["id"])
         loadUser()
+    })
+
+    $(document).on("click", FEEDBACK_POST_SELECTORS[i], function (e) {
+        // Post feedback to alternative
+        $(FEEDBACK_POST_SELECTORS[i]).html("Loading...")
+
+        let content = FEEDBACK_INPUTS[i].val()
+
+        if (content.length <= 0 || content.length > 350) {
+            // Validation failed
+            FEEDBACK_INPUTS[i].addClass("is-invalid")
+            $(FEEDBACK_POST_SELECTORS[i]).html("Post")
+        } else {
+            FEEDBACK_INPUTS[i].removeClass("is-invalid")
+            postFunction(thisChoice["id"], thisChoice["alternatives"][i]["id"], content, thisUser).then(
+                data => {
+                    $(FEEDBACK_POST_SELECTORS[i]).html("Post")
+                    getAndLoadChoice(thisChoice["id"])
+                }
+            )
+        }
     })
 }
