@@ -120,7 +120,7 @@ function loadChoice(choice) {
         $(ALTERNATIVE_UP_SELECTORS[i]).attr("data-content", approversText)
 
         for (let d of alternatives[i]["disapprovers"]) {
-            disapproversText += d["name"] + ","
+            disapproversText += d["name"] + ", "
         }
         disapproversText = disapproversText.substring(0, disapproversText.length-2)
         $(ALTERNATIVE_DOWN_SELECTORS[i]).attr("data-content", disapproversText)
