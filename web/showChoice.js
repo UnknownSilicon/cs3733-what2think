@@ -385,6 +385,8 @@ $(document).on("click", "#login-button", function (e) {
                     // Logged in! Enable buttons and change the login card to the logged in card
                     thisUser = registerRequest["user"]
 
+                    $(".feedback-input").removeAttr("disabled")
+
                     getAndLoadChoice(thisChoice["id"])
 
                     loadUser()
@@ -415,6 +417,8 @@ $(document).on("click", "#logout-button", function (e) {
 
     $("#login-card").removeClass("d-none")
     $("#loggedin-card").addClass("d-none")
+
+    $(".feedback-input").attr("disabled", "disabled")
 })
 
 for (let i=0; i<5; i++) {
