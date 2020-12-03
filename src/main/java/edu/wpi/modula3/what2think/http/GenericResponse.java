@@ -1,21 +1,23 @@
 package edu.wpi.modula3.what2think.http;
 
-public class RegisterResponse {
+public class GenericResponse {
+    //a response to use when you only need a status code
+
     int statusCode;
     String error;
 
-    public RegisterResponse(int statusCode, String error) {
+    public GenericResponse(int statusCode, String error) {
         this.statusCode = statusCode;
         this.error = error;
     }
 
-    public RegisterResponse(int statusCode) {
+    public GenericResponse(int statusCode) {
         this.statusCode = statusCode;
     }
 
     @Override
     public String toString() {
-        return "RegisterResponse{" + "\n" +
+        return "GenericResponse{" + "\n" +
                 "statusCode=" + statusCode + "\n" +
                 ", error='" + error + '\'' + "\n" +
                 '}';
