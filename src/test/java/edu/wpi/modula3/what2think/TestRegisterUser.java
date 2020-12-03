@@ -1,9 +1,6 @@
 package edu.wpi.modula3.what2think;
 
-import edu.wpi.modula3.what2think.http.CreateRequest;
-import edu.wpi.modula3.what2think.http.CreateResponse;
-import edu.wpi.modula3.what2think.http.RegisterRequest;
-import edu.wpi.modula3.what2think.http.RegisterResponse;
+import edu.wpi.modula3.what2think.http.*;
 import edu.wpi.modula3.what2think.model.User;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +20,7 @@ public class TestRegisterUser extends LambdaTest{
         CreateResponse cResponse = cc.handleRequest(cRequest, createContext("createChoice"));
 
         RegisterRequest req = new RegisterRequest(cResponse.getChoice().getId(), user);
-        RegisterResponse response = ru.handleRequest(req, createContext("registerUser"));
+        GenericResponse response = ru.handleRequest(req, createContext("registerUser"));
 
         //assert success in adding
         assertEquals(200, response.getStatusCode());
@@ -69,7 +66,7 @@ public class TestRegisterUser extends LambdaTest{
         User legitUser = new User("invalidTesting", "");
 
         RegisterRequest req = new RegisterRequest(null, legitUser);
-        RegisterResponse response = ru.handleRequest(req, createContext("registerUser"));
+        GenericResponse response = ru.handleRequest(req, createContext("registerUser"));
 
         assertEquals(400, response.getStatusCode());
         assertEquals("invalid input", response.getError());
