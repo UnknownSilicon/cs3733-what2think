@@ -394,9 +394,9 @@ public class DAO {
 			ps.setString(1, alternativeId);
 			ResultSet resultSet = ps.executeQuery();
 
-			resultSet.next();
-
-			return resultSet.getString("choiceID");
+			while (resultSet.next()) {
+				return resultSet.getString("choiceID");
+			}
 		}
 		catch(Exception e){
 			logger.log("Error in getChoiceId!\n" + e.getMessage() + "\n");
@@ -473,6 +473,46 @@ public class DAO {
 		}
 		return new Feedback[0];
 	}
+
+	public boolean completeChoice(String choiceId, Alternative alternative) throws Exception{
+		try {
+			String alternativeId = alternative.getId();
+			if (getAlternative(alternativeId) == null) {
+				logger.log("Alternative: " + alternativeId + " does not exist!\n");
+				return false;
+			}
+			Choice choice = getChoice(getChoiceId(alternativeId));
+			boolean validAlt = false;
+			for (Alternative alt : choice.getAlternatives()) {
+				if (alt.getId().equals(alternativeId)) {
+					validAlt = true;
+					break;
+				}
+			}
+			if (!validAlt) {
+				logger.log("Chosen alternative is not part of choice " + choice.getId() + "!\n");
+				return false;
+			}
+
+
+			PreparedStatement ps = conn.prepareStatement("UPDATE " + CHOICES_TABLE +
+					" SET completionTime=?,chosenAlternativeID=?" +
+					" WHERE choiceID=?;");
+
+			Timestamp ts = new Timestamp(System.currentTimeMillis());
+			ps.setTimestamp(1, ts);
+			ps.setString(2, alternativeId);
+			ps.setString(3, choiceId);
+			ps.executeUpdate();
+
+			return true;
+
+		} catch (Exception e) {
+			logger.log("Error in completeChoice!\n" + e.getMessage() + "\n");
+		}
+		return false;
+	}
+
 
 	/*public Constant getConstant(String name) throws Exception {
 
