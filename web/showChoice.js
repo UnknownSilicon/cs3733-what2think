@@ -135,6 +135,8 @@ function loadChoice(choice) {
 
         let feedbacks = alternatives[i]["feedback"]
 
+
+        FEEDBACK_LISTS[i][0].innerHTML = ""
         for (let feedback of feedbacks) {
             let feedbackElement = createFeedback(feedback)
 
