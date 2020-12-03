@@ -110,19 +110,19 @@ function loadChoice(choice) {
         let approvers_count = alternatives[i]["approvers"].length
         let disapprovers_count = alternatives[i]["disapprovers"].length
 
-        let approversText = ""
-        let disapproversText = ""
+        let approversText = "Voters: "
+        let disapproversText = "Voters: "
 
         for (let a of alternatives[i]["approvers"]) {
-            approversText += a["name"] + ","
+            approversText += a["name"] + ", "
         }
-        approversText = approversText.substring(0, approversText.length-1)
+        approversText = approversText.substring(0, approversText.length-2)
         $(ALTERNATIVE_UP_SELECTORS[i]).attr("data-content", approversText)
 
         for (let d of alternatives[i]["disapprovers"]) {
             disapproversText += d["name"] + ","
         }
-        disapproversText = disapproversText.substring(0, disapproversText.length-1)
+        disapproversText = disapproversText.substring(0, disapproversText.length-2)
         $(ALTERNATIVE_DOWN_SELECTORS[i]).attr("data-content", disapproversText)
 
         ALTERNATIVE_UP_COUNT[i][0].innerText = approvers_count
