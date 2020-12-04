@@ -21,3 +21,8 @@ blockquote footer {
 #logged-in-text {
     line-height: 150%;
 }
+
+.transparent-card {
+    background-color: rgba(245, 245, 245, 1);
+    opacity: .4;
+}
