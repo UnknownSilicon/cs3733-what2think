@@ -6,8 +6,11 @@ let REMOVE_APPROVAL_URL_END = "/removeApproval"
 let DISAPPROVE_URL_END = "/disapprove"
 let REMOVE_DISAPPROVAL_URL_END = "/removeDisapproval"
 let ADD_FEEDBACK_URL_END = "/addFeedback"
+let COMPLETE_URL_END = "/complete"
 
 let ALTERNATIVE_LIST = [$("#alt1"), $("#alt2"), $("#alt3"), $("#alt4"), $("#alt5")]
+
+let ALTERNATIVE_CONTAINERS = [$("#alt1-cont"), $("#alt2-cont"), $("#alt3-cont"), $("#alt4-cont"), $("#alt5-cont")]
 
 let ALTERNATIVE_DESC = [$('#alt1-desc'), $('#alt2-desc'), $('#alt3-desc'), $('#alt4-desc'), $('#alt5-desc')]
 
@@ -16,6 +19,7 @@ let ALTERNATIVE_DOWN_COUNT = [$("#alt1-down-count"), $("#alt2-down-count"), $("#
 
 let ALTERNATIVE_UP_SELECTORS = ["#alt1-up", "#alt2-up", "#alt3-up", "#alt4-up", "#alt5-up"]
 let ALTERNATIVE_DOWN_SELECTORS = ["#alt1-down", "#alt2-down", "#alt3-down", "#alt4-down", "#alt5-down"]
+let ALTERNATIVE_COMPLETE_SELECTORS = ["#alt1-complete", "#alt2-complete", "#alt3-complete", "#alt4-complete", "#alt5-complete"]
 
 let FEEDBACK_LISTS = [$("#alt1-feedbacks"), $("#alt2-feedbacks"), $("#alt3-feedbacks"), $("#alt4-feedbacks"), $("#alt5-feedbacks")]
 
@@ -135,7 +139,6 @@ function loadChoice(choice) {
 
         let feedbacks = alternatives[i]["feedback"]
 
-
         FEEDBACK_LISTS[i][0].innerHTML = ""
         for (let feedback of feedbacks) {
             let feedbackElement = createFeedback(feedback)
@@ -146,7 +149,18 @@ function loadChoice(choice) {
         showAlternative(i)
     }
 
-    // TODO: Make completed marker somewhere
+    if (choice["completed"]) {
+        // Find the completed alternative
+        let chosenAlt = choice["chosenAlternative"]
+        let altId = chosenAlt["id"]
+
+        for (let i=0; i<5; i++) {
+            if (choice["alternatives"][i]["id"] === altId) {
+                markCompleted(i)
+                break
+            }
+        }
+    }
 }
 
 async function getAndLoadAsync(id) {
@@ -279,7 +293,9 @@ function loadUser() {
         if (!isDisapprover) $(ALTERNATIVE_DOWN_SELECTORS[i]).removeClass("btn-danger").addClass("btn-secondary")
     }
 
-    $(":button").removeAttr("disabled")
+    if (!thisChoice["completed"]) {
+        $(":button").removeAttr("disabled")
+    }
 }
 
 function userApproves(altIndex) {
@@ -358,6 +374,42 @@ async function postFunction(choiceId, altId, content, user) {
     return response.json()
 }
 
+function markCompleted(altNum) {
+    for (let i=0; i<5; i++) {
+        if (i !== altNum) {
+            ALTERNATIVE_CONTAINERS[i].addClass("transparent-card")
+        }
+    }
+
+    $(ALTERNATIVE_COMPLETE_SELECTORS[altNum]).removeClass("btn-primary").addClass("btn-success")
+
+    $(":button").attr("disabled", "disabled")
+
+    $("#login-button").removeAttr("disabled")
+    $("#logout-button").removeAttr("disabled")
+
+    $(".feedback-input").attr("disabled", "disabled")
+}
+
+async function completeChoice(choiceId, alternative) {
+    let data = {
+        "alternative": alternative
+    }
+
+    const response = await fetch(CHOICE_ACTION_URL_START + choiceId + COMPLETE_URL_END, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'omit',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response.json()
+}
+
 $(document).ready(function (){
     let queryData = parse_query_string(window.location.search.substring(1))
     let id = queryData["id"]
@@ -385,7 +437,9 @@ $(document).on("click", "#login-button", function (e) {
                     // Logged in! Enable buttons and change the login card to the logged in card
                     thisUser = registerRequest["user"]
 
-                    $(".feedback-input").removeAttr("disabled")
+                    if (!thisChoice["completed"]) {
+                        $(".feedback-input").removeAttr("disabled")
+                    }
 
                     getAndLoadChoice(thisChoice["id"])
 
@@ -415,10 +469,11 @@ $(document).on("click", "#logout-button", function (e) {
 
     $("#login-button").removeAttr("disabled")
 
+    $(".feedback-input").attr("disabled", "disabled")
+
     $("#login-card").removeClass("d-none")
     $("#loggedin-card").addClass("d-none")
 
-    $(".feedback-input").attr("disabled", "disabled")
 })
 
 for (let i=0; i<5; i++) {
@@ -495,5 +550,19 @@ for (let i=0; i<5; i++) {
                 }
             )
         }
+    })
+
+    $(document).on("click", ALTERNATIVE_COMPLETE_SELECTORS[i], function (e) {
+        $(ALTERNATIVE_COMPLETE_SELECTORS[i]).html("<i class=\"fas fa-spinner fa-spin\"></i>")
+
+        completeChoice(thisChoice["id"], thisChoice["alternatives"][i]).then(
+            data => {
+                getAndLoadAsync(thisChoice["id"]).then(
+                    data => {
+                        $(ALTERNATIVE_COMPLETE_SELECTORS[i]).html("<i class=\"fas fa-check\"></i>")
+                    }
+                )
+            }
+        )
     })
 }
