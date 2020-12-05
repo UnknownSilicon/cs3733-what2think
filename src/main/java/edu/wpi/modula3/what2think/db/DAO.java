@@ -512,7 +512,32 @@ public class DAO {
 		}
 		return false;
 	}
+public SimpleChoice[] getSimplifiedChoices() throws Exception {
+		ArrayList<SimpleChoice> simpleChoices = new ArrayList<>();
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE);
+			ResultSet resultSet = ps.executeQuery();
 
+			while (resultSet.next()) {
+				SimpleChoice simpleChoice = new SimpleChoice();
+				simpleChoice.setId(resultSet.getString("choiceID"));
+				simpleChoice.setDescription(resultSet.getString("description"));
+				simpleChoice.setDateCreated(resultSet.getString("creationTime"));
+				if (resultSet.getString("chosenAlternativeID") != null) {
+					simpleChoice.setDateCompleted(resultSet.getString("completionTime"));
+				}
+				simpleChoices.add(simpleChoice);
+			}
+			if (simpleChoices.size() == 0) return new SimpleChoice[0];
+
+			return simpleChoices.toArray(new SimpleChoice[0]);
+		}
+		catch(Exception e){
+			logger.log("Error in getSimplifiedChoices!\n" + e.getMessage() + "\n");
+		}
+		return new SimpleChoice[0];
+
+	}
 
 	/*public Constant getConstant(String name) throws Exception {
 
