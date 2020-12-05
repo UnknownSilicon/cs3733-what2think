@@ -73,7 +73,7 @@
         <div class="col-7">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item d-none" id="alt1">
-                    <div class="container">
+                    <div class="container" id="alt1-cont">
                         <div class="row">
                             <div class="card col">
                                 <div class="card-body">
@@ -91,8 +91,8 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <label>
-                                                        <input type="text" class="form-control" id="alt1-text" placeholder="Feedback">
-                                                        <div class="invalid-feedback">Please enter a feedback of no more than 350 characters</div>
+                                                        <input disabled type="text" class="form-control feedback-input" id="alt1-text" placeholder="Feedback">
+                                                        <div class="invalid-feedback">Please enter a feedback of at least 1 character and no more than 350 characters</div>
                                                     </label>
                                                 </div>
                                                 <div class="col-3 text-right">
@@ -114,7 +114,7 @@
                                         <x-count id="alt1-down-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button disabled class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                        <button disabled class="btn btn-primary m-2" id="alt1-complete"><i class="fas fa-check"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +122,7 @@
                     </div>
                 </li>
                 <li class="list-group-item d-none" id="alt2">
-                    <div class="container">
+                    <div class="container" id="alt2-cont">
                         <div class="row">
                             <div class="card col">
                                 <div class="card-body">
@@ -140,8 +140,8 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <label>
-                                                        <input type="text" class="form-control" id="alt2-text" placeholder="Feedback">
-                                                        <div class="invalid-feedback">Please enter a feedback of no more than 350 characters</div>
+                                                        <input disabled type="text" class="form-control feedback-input" id="alt2-text" placeholder="Feedback">
+                                                        <div class="invalid-feedback">Please enter a feedback of at least 1 character and no more than 350 characters</div>
                                                     </label>
                                                 </div>
                                                 <div class="col-3 text-right">
@@ -163,7 +163,7 @@
                                         <x-count id="alt2-down-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button disabled class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                        <button disabled class="btn btn-primary m-2" id="alt2-complete"><i class="fas fa-check"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +171,7 @@
                     </div>
                 </li>
                 <li class="list-group-item d-none" id="alt3">
-                    <div class="container">
+                    <div class="container" id="alt3-cont">
                         <div class="row">
                             <div class="card col">
                                 <div class="card-body">
@@ -189,8 +189,8 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <label>
-                                                        <input type="text" class="form-control" id="alt3-text" placeholder="Feedback">
-                                                        <div class="invalid-feedback">Please enter a feedback of no more than 350 characters</div>
+                                                        <input disabled type="text" class="form-control feedback-input" id="alt3-text" placeholder="Feedback">
+                                                        <div class="invalid-feedback">Please enter a feedback of at least 1 character and no more than 350 characters</div>
                                                     </label>
                                                 </div>
                                                 <div class="col-3 text-right">
@@ -212,7 +212,7 @@
                                         <x-count id="alt3-down-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button disabled class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                        <button disabled class="btn btn-primary m-2" id="alt3-complete"><i class="fas fa-check"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -220,7 +220,7 @@
                     </div>
                 </li>
                 <li class="list-group-item d-none" id="alt4">
-                    <div class="container">
+                    <div class="container" id="alt4-cont">
                         <div class="row">
                             <div class="card col">
                                 <div class="card-body">
@@ -238,8 +238,8 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <label>
-                                                        <input type="text" class="form-control" id="alt4-text" placeholder="Feedback">
-                                                        <div class="invalid-feedback">Please enter a feedback of no more than 350 characters</div>
+                                                        <input disabled type="text" class="form-control feedback-input" id="alt4-text" placeholder="Feedback">
+                                                        <div class="invalid-feedback">Please enter a feedback of at least 1 character and no more than 350 characters</div>
                                                     </label>
                                                 </div>
                                                 <div class="col-3 text-right">
@@ -261,7 +261,7 @@
                                         <x-count id="alt4-down-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button disabled class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                        <button disabled class="btn btn-primary m-2" id="alt4-complete"><i class="fas fa-check"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -269,7 +269,7 @@
                     </div>
                 </li>
                 <li class="list-group-item d-none" id="alt5">
-                    <div class="container">
+                    <div class="container" id="alt5-cont">
                         <div class="row">
                             <div class="card col">
                                 <div class="card-body">
@@ -287,8 +287,8 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <label>
-                                                        <input type="text" class="form-control" id="alt5-text" placeholder="Feedback">
-                                                        <div class="invalid-feedback">Please enter a feedback of no more than 350 characters</div>
+                                                        <input disabled type="text" class="form-control feedback-input" id="alt5-text" placeholder="Feedback">
+                                                        <div class="invalid-feedback">Please enter a feedback of at least 1 character and no more than 350 characters</div>
                                                     </label>
                                                 </div>
                                                 <div class="col-3 text-right">
@@ -310,7 +310,7 @@
                                         <x-count id="alt5-down-count">0</x-count>
                                     </div>
                                     <div>
-                                        <button disabled class="btn btn-primary m-2"><i class="fas fa-check"></i></button>
+                                        <button disabled class="btn btn-primary m-2" id="alt5-complete"><i class="fas fa-check"></i></button>
                                     </div>
                                 </div>
                             </div>
