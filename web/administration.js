@@ -30,18 +30,20 @@ async function getAndLoadAsync() {
 }
 
 function loadReport(choices) {
-
+    choices.sort(function (a, b) {
+        return b["dateCreated"].localeCompare(a["dateCreated"])
+    })
     clearReport()
     for (let c of choices){
-        console.log("text");
-        addChoiceLine(c["id"].split("-")[0] + "... " + c["description"].substring(0, 25), c["dateCreated"].split(" ")[0], c["dateCompleted"])
+        addChoiceLine(c["id"], c["description"], c["dateCreated"], c["dateCompleted"])
     }
 }
 
-function addChoiceLine(id, created, completed){
+function addChoiceLine(id, description, created, completed){
     let container = $("#report-container")[0]
 
     let item = document.createElement("li");
+    let iddiv = document.createElement("div");
     let row = document.createElement("div");
     let stat = document.createElement("div");
     let info = document.createElement("div");
@@ -55,18 +57,23 @@ function addChoiceLine(id, created, completed){
     infoRow.className = "row"
     info1.className = "col-md-7"
     info2.className = "col-md-3"
+    iddiv.className = "text-muted"
 
     stat.classList = ["col-md-3", "text-center"]
     
-    info1.innerText = id;
-    info2.innerText = created
+    iddiv.innerText = id;
+    if(description.length > 30){
+        description = description.substring(0, 27) + "..."
+    }
+    info1.innerText = description;
+    info2.innerText = created.split(" ")[0]
     
     if (completed == undefined){
-        stat.classList.add("bg-warning")
+        stat.classList.add("text-warning")
         stat.innerText = "Incomplete"
     }
     else {
-        stat.classList.add("bg-success")
+        stat.classList.add("text-success")
         stat.innerText = completed.split(" ")[0]
     }
     infoRow.appendChild(info1)
@@ -74,22 +81,20 @@ function addChoiceLine(id, created, completed){
     info.appendChild(infoRow)
     row.appendChild(info)
     row.appendChild(stat)
+    item.appendChild(iddiv)
     item.appendChild(row)
     container.appendChild(item)
 }
 
 function getAndLoadReport(){
     clearReport()
-    addChoiceLine("Loading...", "Loading...", "Loading...")
+    addChoiceLine("Loading...", "", "", "")
     getAndLoadAsync().then();
 }
 
 function clearReport() {
     let container = $("#report-container")[0]
-    let children = container.children
-    for(let i = 0; i < children.length; i++){
-        container.removeChild(children[i])
-    }
+    container.innerHTML = ""
 }
 
 $(document).ready(function() {

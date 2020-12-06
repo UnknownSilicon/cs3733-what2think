@@ -48,12 +48,14 @@ public class DAO {
 			ps.setTimestamp(4, ts);
 			ps.executeUpdate();
 
+			int index = 0;
 			for (Alternative a : choice.getAlternatives()) {
 				ps = conn.prepareStatement("INSERT INTO " + ALTERNATIVES_TABLE +
-						" (alternativeID, choiceID, description) values(?,?,?)");
+						" (`alternativeID`, `choiceID`, `description`, `order`) values(?,?,?,?)");
 				ps.setString(1, a.getId());
 				ps.setString(2, choice.getId());
 				ps.setString(3, a.getContent());
+				ps.setInt(4, index++);
 				ps.executeUpdate();
 			}
 
@@ -273,7 +275,7 @@ public class DAO {
 		Alternative[] alternatives = new Alternative[5];
 		try{
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
-					" WHERE choiceID=?;");
+					" WHERE choiceID=? ORDER BY `order`;");
 			ps.setString(1, choiceId);
 			ResultSet resultSet = ps.executeQuery();
 
