@@ -417,6 +417,7 @@ $(document).ready(function (){
         // Show some sort of error message
         console.log("Choice is undefined!")
         showInvalidChoice()
+        getAndLoadChoice(thisChoice["id"])
     } else {
         getAndLoadChoice(id)
     }
@@ -451,6 +452,7 @@ $(document).on("click", "#login-button", function (e) {
                     $("#invalid-pw-second").addClass("invalid-feedback").removeClass("d-none")
                     $("#invalid-pw-main").addClass("d-none").removeClass("invalid-feedback")
                     $("#login-password").removeClass("is-valid").addClass("is-invalid")
+                    getAndLoadChoice(thisChoice["id"])
                     setTimeout(function () {
                         LOGIN_BUTTON.html("Log In!")
                         LOGIN_BUTTON.removeClass("btn-danger").addClass("btn-primary")
@@ -541,6 +543,7 @@ for (let i=0; i<5; i++) {
             // Validation failed
             FEEDBACK_INPUTS[i].addClass("is-invalid")
             $(FEEDBACK_POST_SELECTORS[i]).html("Post")
+            getAndLoadChoice(thisChoice["id"])
         } else {
             FEEDBACK_INPUTS[i].removeClass("is-invalid")
             postFunction(thisChoice["id"], thisChoice["alternatives"][i]["id"], content, thisUser).then(
@@ -566,3 +569,12 @@ for (let i=0; i<5; i++) {
         )
     })
 }
+
+$(document).on("click", "#refresh-button", function (e) {
+    $("#refresh-button").html("<i class=\"fas fa-spinner fa-spin\"></i>")
+    getAndLoadAsync(thisChoice["id"]).then(
+        data => {
+            $("#refresh-button").html("Refresh")
+        }
+    )
+})
