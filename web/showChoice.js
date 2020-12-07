@@ -449,9 +449,17 @@ $(document).on("click", "#login-button", function (e) {
                     // Fail! Show error
                     LOGIN_BUTTON.html("Error!")
                     LOGIN_BUTTON.removeClass("btn-primary").addClass("btn-danger")
-                    $("#invalid-pw-second").addClass("invalid-feedback").removeClass("d-none")
-                    $("#invalid-pw-main").addClass("d-none").removeClass("invalid-feedback")
-                    $("#login-password").removeClass("is-valid").addClass("is-invalid")
+
+                    if (data["error"].toLowerCase().includes("password")) {
+                        $("#invalid-pw-second").addClass("invalid-feedback").removeClass("d-none")
+                        $("#invalid-pw-main").addClass("d-none").removeClass("invalid-feedback")
+                        $("#login-password").removeClass("is-valid").addClass("is-invalid")
+                    } else {
+                        $("#invalid-login-second").addClass("invalid-feedback").removeClass("d-none")
+                        $("#invalid-login-main").addClass("d-none").removeClass("invalid-feedback")
+                        $("#login-name").removeClass("is-valid").addClass("is-invalid")
+                    }
+
                     getAndLoadChoice(thisChoice["id"])
                     setTimeout(function () {
                         LOGIN_BUTTON.html("Log In!")
