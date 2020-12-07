@@ -543,18 +543,22 @@ public SimpleChoice[] getSimplifiedChoices() throws Exception {
 
 	public boolean deleteChoices(float days){
 		try{
-			/*PreparedStatement ps = conn.prepareStatement("DELETE FROM " + CHOICES_TABLE +
-					" WHERE creationTime < DATEADD(ss,?,GETDATE());");
-			*/
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM " + CHOICES_TABLE +
+					" WHERE creationTime < DATE_SUB(NOW(),INTERVAL ? DAY);");
+
+			/*PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
 					" WHERE creationTime < DATE_SUB(NOW(),INTERVAL ? DAY);");
 			ps.setFloat(1, days);
 			ResultSet resultSet = ps.executeQuery();
 			while (resultSet.next()) {
 				String choiceId = (resultSet.getString("choiceID"));
 				String timeStamp = (resultSet.getString("creationTime"));
-				System.out.println("Choice ID: " + choiceId + ", timestamp: " + timeStamp);
-			}
+				//System.out.println("Choice ID: " + choiceId + ", timestamp: " + timeStamp);
+			}*/
+
+			ps.setFloat(1, days);
+			ps.executeUpdate();
+
 			return true;
 		}
 		catch(Exception e){
@@ -573,7 +577,9 @@ public SimpleChoice[] getSimplifiedChoices() throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + CHOICES_TABLE +
 					" (choiceID,description,maxParticipants,creationTime) values(?,?,?,?);");
-			ps.setString(1, choice.getId());
+			String choiceID = choice.getId();
+
+			ps.setString(1, choiceID);
 			ps.setString(2, choice.getDescription());
 			ps.setInt(3, choice.getMaxUsers());
 			Timestamp ts = new Timestamp(System.currentTimeMillis());
@@ -588,15 +594,15 @@ public SimpleChoice[] getSimplifiedChoices() throws Exception {
 			for (Alternative a : choice.getAlternatives()) {
 				ps = conn.prepareStatement("INSERT INTO " + ALTERNATIVES_TABLE +
 						" (alternativeID, choiceID, description) values(?,?,?)");
-				ps.setString(1, a.getId());
-				ps.setString(2, choice.getId());
+				ps.setString(1, UUID.randomUUID().toString());
+				ps.setString(2, choiceID);
 				ps.setString(3, a.getContent());
 				ps.executeUpdate();
 			}
 
 			return true;
 		} catch (Exception e) {
-			logger.log("Error in addChoice!\n" + e.getMessage() + "\n");
+			logger.log("Error in addOldChoice!\n" + e.getMessage() + "\n");
 			throw e;
 		}
 	}
