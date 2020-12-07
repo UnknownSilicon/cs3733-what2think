@@ -566,3 +566,12 @@ for (let i=0; i<5; i++) {
         )
     })
 }
+
+$(document).on("click", "#refresh-button", function (e) {
+    $("#refresh-button").html("<i class=\"fas fa-spinner fa-spin\"></i>")
+    getAndLoadAsync(thisChoice["id"]).then(
+        data => {
+            $("#refresh-button").html("Refresh")
+        }
+    )
+})
