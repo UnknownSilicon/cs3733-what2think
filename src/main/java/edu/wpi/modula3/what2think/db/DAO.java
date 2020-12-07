@@ -533,6 +533,13 @@ public SimpleChoice[] getSimplifiedChoices() throws Exception {
 				simpleChoices.add(simpleChoice);
 			}
 			if (simpleChoices.size() == 0) return new SimpleChoice[0];
+			return simpleChoices.toArray(new SimpleChoice[0]);
+		}
+		catch(Exception e){
+			logger.log("Error in getSimplifiedChoices!\n" + e.getMessage() + "\n");
+		}
+	return new SimpleChoice[0];
+	}
 
 	public boolean deleteChoices(float days){
 		try{
@@ -592,14 +599,6 @@ public SimpleChoice[] getSimplifiedChoices() throws Exception {
 			logger.log("Error in addChoice!\n" + e.getMessage() + "\n");
 			throw e;
 		}
-	}
-			return simpleChoices.toArray(new SimpleChoice[0]);
-		}
-		catch(Exception e){
-			logger.log("Error in getSimplifiedChoices!\n" + e.getMessage() + "\n");
-		}
-		return new SimpleChoice[0];
-
 	}
 
 	/*public Constant getConstant(String name) throws Exception {
