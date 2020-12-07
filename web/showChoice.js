@@ -426,6 +426,8 @@ $(document).ready(function (){
 })
 
 $(document).on("click", "#login-button", function (e) {
+    e.preventDefault()
+
     // Validate data
     if (validateLogin()) {
         LOGIN_BUTTON.html("Loading...")
@@ -542,6 +544,7 @@ for (let i=0; i<5; i++) {
     })
 
     $(document).on("click", FEEDBACK_POST_SELECTORS[i], function (e) {
+        e.preventDefault()
         // Post feedback to alternative
         $(FEEDBACK_POST_SELECTORS[i]).html("Loading...")
 
@@ -557,6 +560,7 @@ for (let i=0; i<5; i++) {
             postFunction(thisChoice["id"], thisChoice["alternatives"][i]["id"], content, thisUser).then(
                 data => {
                     $(FEEDBACK_POST_SELECTORS[i]).html("Post")
+                    FEEDBACK_INPUTS[i].val("")
                     getAndLoadChoice(thisChoice["id"])
                 }
             )
