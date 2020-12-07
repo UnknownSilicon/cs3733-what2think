@@ -43,11 +43,12 @@ function addChoiceLine(id, description, created, completed){
     let container = $("#report-container")[0]
 
     let item = document.createElement("li");
+    let idlink = document.createElement("a");
     let iddiv = document.createElement("div");
     let row = document.createElement("div");
     let stat = document.createElement("div");
     let info = document.createElement("div");
-    let infoRow = document.createElement("div")
+    let infoRow = document.createElement("div");
     let info1 = document.createElement("div");
     let info2 = document.createElement("div");
 
@@ -57,24 +58,28 @@ function addChoiceLine(id, description, created, completed){
     infoRow.className = "row"
     info1.className = "col-md-7"
     info2.className = "col-md-3"
-    iddiv.className = "text-muted"
+    idlink.className = "text-muted"
 
     stat.classList = ["col-md-3", "text-center"]
     
-    iddiv.innerText = id;
+    idlink.innerText = id
+    iddiv.style = "cursor: pointer;"
+    idlink.href =  window.location.origin + "/showChoice.html?&id=" + id
+    iddiv.appendChild(idlink);
+
     if(description.length > 30){
         description = description.substring(0, 27) + "..."
     }
     info1.innerText = description;
-    info2.innerText = created.split(" ")[0]
+    info2.innerText = dhmFromDatetime(created)
     
     if (completed == undefined){
         stat.classList.add("text-warning")
         stat.innerText = "Incomplete"
     }
-    else {
+    else if (completed != ""){
         stat.classList.add("text-success")
-        stat.innerText = completed.split(" ")[0]
+        stat.innerText = completed.split(" ")[0] + " ✓"
     }
     infoRow.appendChild(info1)
     infoRow.appendChild(info2)
@@ -84,6 +89,13 @@ function addChoiceLine(id, description, created, completed){
     item.appendChild(iddiv)
     item.appendChild(row)
     container.appendChild(item)
+}
+
+function dhmFromDatetime(datetime) {
+    if(datetime == ""){return ""}
+    let time = datetime.split(" ")[0]
+    let hms = datetime.split(" ")[1].split(":")
+    return time +  " " + hms[0] + ":" + hms[1]
 }
 
 function getAndLoadReport(){
