@@ -48,12 +48,14 @@ public class DAO {
 			ps.setTimestamp(4, ts);
 			ps.executeUpdate();
 
+			int index = 0;
 			for (Alternative a : choice.getAlternatives()) {
 				ps = conn.prepareStatement("INSERT INTO " + ALTERNATIVES_TABLE +
-						" (alternativeID, choiceID, description) values(?,?,?)");
+						" (`alternativeID`, `choiceID`, `description`, `order`) values(?,?,?,?)");
 				ps.setString(1, a.getId());
 				ps.setString(2, choice.getId());
 				ps.setString(3, a.getContent());
+				ps.setInt(4, index++);
 				ps.executeUpdate();
 			}
 
@@ -273,7 +275,7 @@ public class DAO {
 		Alternative[] alternatives = new Alternative[5];
 		try{
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
-					" WHERE choiceID=?;");
+					" WHERE choiceID=? ORDER BY `order`;");
 			ps.setString(1, choiceId);
 			ResultSet resultSet = ps.executeQuery();
 
@@ -512,7 +514,32 @@ public class DAO {
 		}
 		return false;
 	}
+public SimpleChoice[] getSimplifiedChoices() throws Exception {
+		ArrayList<SimpleChoice> simpleChoices = new ArrayList<>();
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE);
+			ResultSet resultSet = ps.executeQuery();
 
+			while (resultSet.next()) {
+				SimpleChoice simpleChoice = new SimpleChoice();
+				simpleChoice.setId(resultSet.getString("choiceID"));
+				simpleChoice.setDescription(resultSet.getString("description"));
+				simpleChoice.setDateCreated(resultSet.getString("creationTime"));
+				if (resultSet.getString("chosenAlternativeID") != null) {
+					simpleChoice.setDateCompleted(resultSet.getString("completionTime"));
+				}
+				simpleChoices.add(simpleChoice);
+			}
+			if (simpleChoices.size() == 0) return new SimpleChoice[0];
+
+			return simpleChoices.toArray(new SimpleChoice[0]);
+		}
+		catch(Exception e){
+			logger.log("Error in getSimplifiedChoices!\n" + e.getMessage() + "\n");
+		}
+		return new SimpleChoice[0];
+
+	}
 
 	/*public Constant getConstant(String name) throws Exception {
 
