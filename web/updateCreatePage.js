@@ -135,6 +135,7 @@ function buttonError() {
 }
 
 $(document).on('click', '#createButton', function(e) {
+    e.preventDefault()
     buttonLoading();
     createChoice(createChoiceObj())
         .then(data => {
