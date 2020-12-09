@@ -121,7 +121,7 @@ async function doDeletion(cutoff) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            'DeleteDay': cutoff
+            'days': cutoff
         })
     })
 
