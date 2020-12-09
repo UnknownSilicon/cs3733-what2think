@@ -19,7 +19,10 @@ let ALTERNATIVE_DOWN_COUNT = [$("#alt1-down-count"), $("#alt2-down-count"), $("#
 
 let ALTERNATIVE_UP_SELECTORS = ["#alt1-up", "#alt2-up", "#alt3-up", "#alt4-up", "#alt5-up"]
 let ALTERNATIVE_DOWN_SELECTORS = ["#alt1-down", "#alt2-down", "#alt3-down", "#alt4-down", "#alt5-down"]
-let ALTERNATIVE_COMPLETE_SELECTORS = ["#alt1-complete", "#alt2-complete", "#alt3-complete", "#alt4-complete", "#alt5-complete"]
+let ALTERNATIVE_COMPLETE_SELECTORS = ["#alt1-complete-confirm", "#alt2-complete-confirm", "#alt3-complete-confirm", "#alt4-complete-confirm", "#alt5-complete-confirm"]
+let ALTERNATIVE_COMPLETE_CHECK = ["#alt1-complete", "#alt2-complete", "#alt3-complete", "#alt4-complete", "#alt5-complete"]
+
+let ALTERNATIVE_COMPLETE_MODAL = ["#alt1-modal", "#alt2-modal", "#alt3-modal", "#alt4-modal", "#alt5-modal"]
 
 let FEEDBACK_LISTS = [$("#alt1-feedbacks"), $("#alt2-feedbacks"), $("#alt3-feedbacks"), $("#alt4-feedbacks"), $("#alt5-feedbacks")]
 
@@ -381,7 +384,7 @@ function markCompleted(altNum) {
         }
     }
 
-    $(ALTERNATIVE_COMPLETE_SELECTORS[altNum]).removeClass("btn-primary").addClass("btn-success")
+    $(ALTERNATIVE_COMPLETE_CHECK[altNum]).removeClass("btn-primary").addClass("btn-success")
 
     $(":button").attr("disabled", "disabled")
 
@@ -567,14 +570,16 @@ for (let i=0; i<5; i++) {
         }
     })
 
+
     $(document).on("click", ALTERNATIVE_COMPLETE_SELECTORS[i], function (e) {
-        $(ALTERNATIVE_COMPLETE_SELECTORS[i]).html("<i class=\"fas fa-spinner fa-spin\"></i>")
+        $(ALTERNATIVE_COMPLETE_MODAL[i]).modal('hide')
+        $(ALTERNATIVE_COMPLETE_CHECK[i]).html("<i class=\"fas fa-spinner fa-spin\"></i>")
 
         completeChoice(thisChoice["id"], thisChoice["alternatives"][i]).then(
             data => {
                 getAndLoadAsync(thisChoice["id"]).then(
                     data => {
-                        $(ALTERNATIVE_COMPLETE_SELECTORS[i]).html("<i class=\"fas fa-check\"></i>")
+                        $(ALTERNATIVE_COMPLETE_CHECK[i]).html("<i class=\"fas fa-check\"></i>")
                     }
                 )
             }
