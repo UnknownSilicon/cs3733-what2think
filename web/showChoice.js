@@ -19,7 +19,10 @@ let ALTERNATIVE_DOWN_COUNT = [$("#alt1-down-count"), $("#alt2-down-count"), $("#
 
 let ALTERNATIVE_UP_SELECTORS = ["#alt1-up", "#alt2-up", "#alt3-up", "#alt4-up", "#alt5-up"]
 let ALTERNATIVE_DOWN_SELECTORS = ["#alt1-down", "#alt2-down", "#alt3-down", "#alt4-down", "#alt5-down"]
-let ALTERNATIVE_COMPLETE_SELECTORS = ["#alt1-complete", "#alt2-complete", "#alt3-complete", "#alt4-complete", "#alt5-complete"]
+let ALTERNATIVE_COMPLETE_SELECTORS = ["#alt1-complete-confirm", "#alt2-complete-confirm", "#alt3-complete-confirm", "#alt4-complete-confirm", "#alt5-complete-confirm"]
+let ALTERNATIVE_COMPLETE_CHECK = ["#alt1-complete", "#alt2-complete", "#alt3-complete", "#alt4-complete", "#alt5-complete"]
+
+let ALTERNATIVE_COMPLETE_MODAL = ["#alt1-modal", "#alt2-modal", "#alt3-modal", "#alt4-modal", "#alt5-modal"]
 
 let FEEDBACK_LISTS = [$("#alt1-feedbacks"), $("#alt2-feedbacks"), $("#alt3-feedbacks"), $("#alt4-feedbacks"), $("#alt5-feedbacks")]
 
@@ -381,7 +384,7 @@ function markCompleted(altNum) {
         }
     }
 
-    $(ALTERNATIVE_COMPLETE_SELECTORS[altNum]).removeClass("btn-primary").addClass("btn-success")
+    $(ALTERNATIVE_COMPLETE_CHECK[altNum]).removeClass("btn-primary").addClass("btn-success")
 
     $(":button").attr("disabled", "disabled")
 
@@ -426,6 +429,8 @@ $(document).ready(function (){
 })
 
 $(document).on("click", "#login-button", function (e) {
+    e.preventDefault()
+
     // Validate data
     if (validateLogin()) {
         LOGIN_BUTTON.html("Loading...")
@@ -449,9 +454,17 @@ $(document).on("click", "#login-button", function (e) {
                     // Fail! Show error
                     LOGIN_BUTTON.html("Error!")
                     LOGIN_BUTTON.removeClass("btn-primary").addClass("btn-danger")
-                    $("#invalid-pw-second").addClass("invalid-feedback").removeClass("d-none")
-                    $("#invalid-pw-main").addClass("d-none").removeClass("invalid-feedback")
-                    $("#login-password").removeClass("is-valid").addClass("is-invalid")
+
+                    if (data["error"].toLowerCase().includes("password")) {
+                        $("#invalid-pw-second").addClass("invalid-feedback").removeClass("d-none")
+                        $("#invalid-pw-main").addClass("d-none").removeClass("invalid-feedback")
+                        $("#login-password").removeClass("is-valid").addClass("is-invalid")
+                    } else {
+                        $("#invalid-login-second").addClass("invalid-feedback").removeClass("d-none")
+                        $("#invalid-login-main").addClass("d-none").removeClass("invalid-feedback")
+                        $("#login-name").removeClass("is-valid").addClass("is-invalid")
+                    }
+
                     getAndLoadChoice(thisChoice["id"])
                     setTimeout(function () {
                         LOGIN_BUTTON.html("Log In!")
@@ -534,6 +547,7 @@ for (let i=0; i<5; i++) {
     })
 
     $(document).on("click", FEEDBACK_POST_SELECTORS[i], function (e) {
+        e.preventDefault()
         // Post feedback to alternative
         $(FEEDBACK_POST_SELECTORS[i]).html("Loading...")
 
@@ -549,20 +563,23 @@ for (let i=0; i<5; i++) {
             postFunction(thisChoice["id"], thisChoice["alternatives"][i]["id"], content, thisUser).then(
                 data => {
                     $(FEEDBACK_POST_SELECTORS[i]).html("Post")
+                    FEEDBACK_INPUTS[i].val("")
                     getAndLoadChoice(thisChoice["id"])
                 }
             )
         }
     })
 
+
     $(document).on("click", ALTERNATIVE_COMPLETE_SELECTORS[i], function (e) {
-        $(ALTERNATIVE_COMPLETE_SELECTORS[i]).html("<i class=\"fas fa-spinner fa-spin\"></i>")
+        $(ALTERNATIVE_COMPLETE_MODAL[i]).modal('hide')
+        $(ALTERNATIVE_COMPLETE_CHECK[i]).html("<i class=\"fas fa-spinner fa-spin\"></i>")
 
         completeChoice(thisChoice["id"], thisChoice["alternatives"][i]).then(
             data => {
                 getAndLoadAsync(thisChoice["id"]).then(
                     data => {
-                        $(ALTERNATIVE_COMPLETE_SELECTORS[i]).html("<i class=\"fas fa-check\"></i>")
+                        $(ALTERNATIVE_COMPLETE_CHECK[i]).html("<i class=\"fas fa-check\"></i>")
                     }
                 )
             }
