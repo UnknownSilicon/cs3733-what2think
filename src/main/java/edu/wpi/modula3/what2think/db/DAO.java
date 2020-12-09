@@ -146,31 +146,37 @@ public class DAO {
 	}
 
 	public boolean validateAlternativeAction(String choiceId, AlternativeAction act) throws Exception{
-		PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
-				" WHERE choiceID=?;");
-		ps.setString(1, choiceId);
-		ResultSet resultSet = ps.executeQuery();
-		if(resultSet.next()){
-			ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
-					" WHERE choiceID=? AND alternativeID=?;");
-			ps.setString(1, choiceId);
-			ps.setString(2, act.getAlternative().getId());
-			resultSet = ps.executeQuery();
-			if(resultSet.next()){
-				ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE+
-						" WHERE choiceID=? AND name=?;");
+		//PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
+				//" WHERE choiceID=?;");
+		//ps.setString(1, choiceId);
+		//ResultSet resultSet = ps.executeQuery();
+		Choice choice = getChoice(choiceId);
+		if(choice != null){
+			if(!choice.isCompleted()) {
+				PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + ALTERNATIVES_TABLE +
+						" WHERE choiceID=? AND alternativeID=?;");
 				ps.setString(1, choiceId);
-				ps.setString(2, act.getUser().getName());
-				resultSet = ps.executeQuery();
-				if(resultSet.next()){
-					return true;
+				ps.setString(2, act.getAlternative().getId());
+				ResultSet resultSet = ps.executeQuery();
+				if (resultSet.next()) {
+					ps = conn.prepareStatement("SELECT * FROM " + USERS_TABLE +
+							" WHERE choiceID=? AND name=?;");
+					ps.setString(1, choiceId);
+					ps.setString(2, act.getUser().getName());
+					resultSet = ps.executeQuery();
+					if (resultSet.next()) {
+						return true;
+					}
+					else {
+						throw new Exception("No user with this name in given choice");
+					}
 				}
-				else{
-					throw new Exception("No user with this name in given choice");
+				else {
+					throw new Exception("No alternative with this ID in given choice");
 				}
 			}
 			else{
-				throw new Exception("No alternative with this ID in given choice");
+				throw new Exception("Completed choice cannot be interacted with");
 			}
 		}
 		else {

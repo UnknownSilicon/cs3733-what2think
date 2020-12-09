@@ -157,6 +157,7 @@ public class TestVoting extends LambdaTest{
     public void testInvalid(RequestHandler<VoteRequest, GenericResponse> handler, String apiCall){
         RegisterUser ru = new RegisterUser();
         CreateChoice cc = new CreateChoice();
+        CompleteChoice comp = new CompleteChoice();
 
         User user = new User("testingVotes", "ew");
 
@@ -275,6 +276,16 @@ public class TestVoting extends LambdaTest{
 
         assertEquals(400, response.getStatusCode());
         assertEquals("No alternative with this ID in given choice", response.getError());
+
+        CompleteRequest compReq = new CompleteRequest(cResponse.getChoice().getId(),
+                cResponse.getChoice().getAlternatives()[1]);
+        GenericResponse compResponse = comp.handleRequest(compReq, createContext("completeChoice"));
+
+        req = new VoteRequest(cResponse.getChoice().getId(), act);
+        response = handler.handleRequest(req, createContext(apiCall));
+
+        assertEquals(400, response.getStatusCode());
+        assertEquals("Completed choice cannot be interacted with", response.getError());
     }
 
     @Test
