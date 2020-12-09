@@ -2,6 +2,7 @@ package edu.wpi.modula3.what2think.db;
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import edu.wpi.modula3.what2think.model.*;
+import org.joda.time.DateTime;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.UUID;
 
 public class DAO {
@@ -537,14 +539,78 @@ public SimpleChoice[] getSimplifiedChoices() throws Exception {
 				simpleChoices.add(simpleChoice);
 			}
 			if (simpleChoices.size() == 0) return new SimpleChoice[0];
-
 			return simpleChoices.toArray(new SimpleChoice[0]);
 		}
 		catch(Exception e){
 			logger.log("Error in getSimplifiedChoices!\n" + e.getMessage() + "\n");
 		}
-		return new SimpleChoice[0];
+	return new SimpleChoice[0];
+	}
 
+	public boolean deleteChoices(float days){
+		try{
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM " + CHOICES_TABLE +
+					" WHERE creationTime < DATE_SUB(NOW(),INTERVAL ? DAY);");
+
+			/*PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
+					" WHERE creationTime < DATE_SUB(NOW(),INTERVAL ? DAY);");
+			ps.setFloat(1, days);
+			ResultSet resultSet = ps.executeQuery();
+			while (resultSet.next()) {
+				String choiceId = (resultSet.getString("choiceID"));
+				String timeStamp = (resultSet.getString("creationTime"));
+				//System.out.println("Choice ID: " + choiceId + ", timestamp: " + timeStamp);
+			}*/
+
+			ps.setFloat(1, days);
+			ps.executeUpdate();
+
+			return true;
+		}
+		catch(Exception e){
+			logger.log("Error in deleteChoices!\n" + e.getMessage() + "\n");
+		}
+		return false;
+	}
+
+	public boolean addOldChoice(Choice choice, float daysOld) throws Exception {
+		if (choice.getMaxUsers() == null || choice.getMaxUsers() < 1)
+			throw new Exception("Invalid number of participants");
+		if (choice.getAlternatives() == null || choice.getAlternatives().length < 2) {
+			throw new Exception("Invalid number of alternatives");
+		}
+
+		try {
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + CHOICES_TABLE +
+					" (choiceID,description,maxParticipants,creationTime) values(?,?,?,?);");
+			String choiceID = choice.getId();
+
+			ps.setString(1, choiceID);
+			ps.setString(2, choice.getDescription());
+			ps.setInt(3, choice.getMaxUsers());
+			Timestamp ts = new Timestamp(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(ts.getTime());
+			cal.add(Calendar.SECOND, -1 * (int) (daysOld * 24 * 60 * 60));
+			ts = new Timestamp(cal.getTime().getTime());
+			System.out.println(ts);
+			ps.setTimestamp(4, ts);
+			ps.executeUpdate();
+
+			for (Alternative a : choice.getAlternatives()) {
+				ps = conn.prepareStatement("INSERT INTO " + ALTERNATIVES_TABLE +
+						" (alternativeID, choiceID, description) values(?,?,?)");
+				ps.setString(1, UUID.randomUUID().toString());
+				ps.setString(2, choiceID);
+				ps.setString(3, a.getContent());
+				ps.executeUpdate();
+			}
+
+			return true;
+		} catch (Exception e) {
+			logger.log("Error in addOldChoice!\n" + e.getMessage() + "\n");
+			throw e;
+		}
 	}
 
 	/*public Constant getConstant(String name) throws Exception {
