@@ -1,5 +1,7 @@
 let GET_REPORT_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/aaaaaaaaadmin/choices"
-let item_template = ""
+let DELETE_URL = " https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/aaaaaaaaadmin/delete"
+let DELETE_BUTTON = $("#delete-button")[0]
+let REPORT_BUTTON = $("#report-button")[0]
 
 function loadReport() {
     
@@ -17,6 +19,8 @@ async function getReport() {
 }
 
 async function getAndLoadAsync() {
+    clearReport()
+    addChoiceLine("Loading...", "", "", "")
     return getReport().then(data => {
         let statusCode = data["statusCode"]
         if (statusCode == 200){
@@ -99,8 +103,6 @@ function dhmFromDatetime(datetime) {
 }
 
 function getAndLoadReport(){
-    clearReport()
-    addChoiceLine("Loading...", "", "", "")
     getAndLoadAsync().then();
 }
 
@@ -109,11 +111,58 @@ function clearReport() {
     container.innerHTML = ""
 }
 
+async function doDeletion(cutoff) {
+    const response = await fetch(DELETE_URL, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'omit',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'days': cutoff
+        })
+    })
+
+    return response.json() // Returns the Choice object
+}
+
+async function doDeletionAsync(cutoff) {
+    doDeletion(cutoff).then( data => {
+        getAndLoadReport()
+    })
+}
+
 $(document).ready(function() {
     item_template = $("#report-container")[0].children[0].innerHTML
     getAndLoadReport();
 })
 
 $(document).on("click", "#report-button", function (e){
-    getAndLoadReport();
+    REPORT_BUTTON.innerHTML = "<i class=\"fas fa-spinner fa-spin\"><\i>"
+    REPORT_BUTTON.disabled = true
+    getAndLoadAsync().then(
+        data => {
+            REPORT_BUTTON.innerHTML = "Generate Report"
+            REPORT_BUTTON.disabled = false
+        }
+    );
+})
+
+$(document).on("click", "#delete-button", function (e){
+    cutoff = parseFloat($("#cutoff").val())
+    if (isNaN(cutoff)){
+        $("#cutoff").addClass("is-invalid")
+        return
+    }
+    $("#cutoff").removeClass("is-invalid")
+    DELETE_BUTTON.innerHTML = "<i class=\"fas fa-spinner fa-spin\"><\i>"
+    DELETE_BUTTON.disabled = true
+    doDeletionAsync(cutoff).then(
+        data => {
+            DELETE_BUTTON.innerHTML = "Delete"
+            DELETE_BUTTON.disabled = false
+        }
+    );
 })
