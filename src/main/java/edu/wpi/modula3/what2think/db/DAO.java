@@ -2,7 +2,6 @@ package edu.wpi.modula3.what2think.db;
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import edu.wpi.modula3.what2think.model.*;
-import org.joda.time.DateTime;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -70,6 +69,8 @@ public class DAO {
 
 	public boolean addFeedback(Feedback feedback) throws Exception {
 		if (feedback.getContent() == null) throw new Exception("No feedback content");
+		if (getChoice(getChoiceId(feedback.getAlternativeId())).isCompleted())
+			throw new Exception("Completed choice cannot be interacted with");
 
 		try {
 			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + FEEDBACKS_TABLE +
@@ -485,6 +486,8 @@ public class DAO {
 	}
 
 	public boolean completeChoice(String choiceId, Alternative alternative) throws Exception{
+		if (getChoice(choiceId).isCompleted())
+			throw new Exception("Completed choice cannot be interacted with");
 		try {
 			String alternativeId = alternative.getId();
 			if (getAlternative(alternativeId) == null) {
@@ -549,22 +552,53 @@ public SimpleChoice[] getSimplifiedChoices() throws Exception {
 
 	public boolean deleteChoices(float days){
 		try{
-			PreparedStatement ps = conn.prepareStatement("DELETE FROM " + CHOICES_TABLE +
-					" WHERE creationTime < DATE_SUB(NOW(),INTERVAL ? DAY);");
+			int seconds = (int)(days * 24 * 60 * 60);
 
-			/*PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
-					" WHERE creationTime < DATE_SUB(NOW(),INTERVAL ? DAY);");
-			ps.setFloat(1, days);
-			ResultSet resultSet = ps.executeQuery();
-			while (resultSet.next()) {
-				String choiceId = (resultSet.getString("choiceID"));
-				String timeStamp = (resultSet.getString("creationTime"));
-				//System.out.println("Choice ID: " + choiceId + ", timestamp: " + timeStamp);
-			}*/
+			ArrayList<String> choiceIDs = new ArrayList<>();
+			PreparedStatement psChoiceId = conn.prepareStatement("SELECT * FROM " + CHOICES_TABLE +
+					" WHERE creationTime < DATE_SUB(NOW(),INTERVAL ? SECOND);");
+			psChoiceId.setFloat(1, seconds);
+			ResultSet resultSetChoiceID = psChoiceId.executeQuery();
+			while (resultSetChoiceID.next()) {
+				choiceIDs.add(resultSetChoiceID.getString("choiceID"));
+			}
+			for (String id : choiceIDs) {
+				ArrayList<String> altIDs = new ArrayList<>();
+				Alternative[] alts = getAlternatives(id);
+				for (Alternative alt : alts) {
+					if (alt == null) continue;
+					altIDs.add(alt.getId());
+				}
+				if (altIDs.size() == 0) continue;
 
-			ps.setFloat(1, days);
-			ps.executeUpdate();
 
+				for (String altID : altIDs) {
+					PreparedStatement psDelFeedback = conn.prepareStatement("DELETE FROM " + FEEDBACKS_TABLE +
+							" WHERE alternativeID=?;");
+					psDelFeedback.setString(1, altID);
+					psDelFeedback.executeUpdate();
+
+					PreparedStatement psDelVotes = conn.prepareStatement("DELETE FROM " + VOTES_TABLE +
+							" WHERE alternativeID=?;");
+					psDelVotes.setString(1, altID);
+					psDelVotes.executeUpdate();
+
+					PreparedStatement psDelAlts = conn.prepareStatement("DELETE FROM " + ALTERNATIVES_TABLE +
+							" WHERE alternativeID=?;");
+					psDelAlts.setString(1, altID);
+					psDelAlts.executeUpdate();
+				}
+
+				PreparedStatement psDelUsers = conn.prepareStatement("DELETE FROM " + USERS_TABLE +
+						" WHERE choiceID=?;");
+				psDelUsers.setString(1, id);
+				psDelUsers.executeUpdate();
+			}
+
+			PreparedStatement psDel = conn.prepareStatement("DELETE FROM " + CHOICES_TABLE +
+					" WHERE creationTime < DATE_SUB(NOW(),INTERVAL ? SECOND);");
+			psDel.setFloat(1, seconds);
+			psDel.executeUpdate();
 			return true;
 		}
 		catch(Exception e){
@@ -593,7 +627,6 @@ public SimpleChoice[] getSimplifiedChoices() throws Exception {
 			cal.setTimeInMillis(ts.getTime());
 			cal.add(Calendar.SECOND, -1 * (int) (daysOld * 24 * 60 * 60));
 			ts = new Timestamp(cal.getTime().getTime());
-			System.out.println(ts);
 			ps.setTimestamp(4, ts);
 			ps.executeUpdate();
 
