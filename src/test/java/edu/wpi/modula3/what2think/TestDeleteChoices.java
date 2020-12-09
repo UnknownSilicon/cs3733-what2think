@@ -40,7 +40,7 @@ public class TestDeleteChoices extends LambdaTest {
         String newId = UUID.randomUUID().toString();
         choice.setId(newId);
 
-        assertTrue(createOldChoice(choice, (float) 1000.001));
+        assertTrue(createOldChoice(choice, (float) 100));
 
         GetChoice gc = new GetChoice();
         GetRequest request = new GetRequest(newId);
@@ -49,7 +49,7 @@ public class TestDeleteChoices extends LambdaTest {
         assertNotNull(response.getChoice());
 
         DeleteChoices del = new DeleteChoices();
-        DeleteRequest deleteRequest = new DeleteRequest((float)1000);
+        DeleteRequest deleteRequest = new DeleteRequest((float)99.99999);
         GenericResponse genericResponse = del.handleRequest(deleteRequest, createContext("deleteChoice"));
         assertEquals(200, genericResponse.getStatusCode());
 
@@ -81,7 +81,7 @@ public class TestDeleteChoices extends LambdaTest {
         assertNotNull(response.getChoice());
 
         DeleteChoices del = new DeleteChoices();
-        DeleteRequest deleteRequest = new DeleteRequest((float)100);
+        DeleteRequest deleteRequest = new DeleteRequest((float)99.0001);
         GenericResponse genericResponse = del.handleRequest(deleteRequest, createContext("deleteChoice"));
         assertEquals(200, genericResponse.getStatusCode());
 
