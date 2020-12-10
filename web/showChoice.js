@@ -263,6 +263,7 @@ function hideDescription() {
 
 function loadUser() {
     console.log("Loading user")
+
     $("#login-card").addClass("d-none")
     $("#loggedin-card").removeClass("d-none")
     $("#logged-in-text").html("Logged In As <div class=\"text-success\">" + thisUser["name"] + "</div>")
@@ -302,6 +303,7 @@ function loadUser() {
     if (!thisChoice["completed"]) {
         $(":button").removeAttr("disabled")
     }
+
 }
 
 function userApproves(altIndex) {
@@ -506,6 +508,7 @@ for (let i=0; i<5; i++) {
                 data => {
                     getAndLoadAsync(thisChoice["id"]).then(data => {
                         loadUser()
+                        getAndLoadChoice(thisChoice["id"])
                         $(ALTERNATIVE_UP_SELECTORS[i]).html("<i class=\"fas fa-thumbs-up\"></i>")
                     })
                 }
@@ -516,6 +519,7 @@ for (let i=0; i<5; i++) {
                 data => {
                     getAndLoadAsync(thisChoice["id"]).then(data => {
                         loadUser()
+                        getAndLoadChoice(thisChoice["id"])
                         $(ALTERNATIVE_UP_SELECTORS[i]).html("<i class=\"fas fa-thumbs-up\"></i>")
                     })
 
@@ -532,6 +536,7 @@ for (let i=0; i<5; i++) {
                 data => {
                     getAndLoadAsync(thisChoice["id"]).then(data => {
                         loadUser()
+                        getAndLoadChoice(thisChoice["id"])
                         $(ALTERNATIVE_DOWN_SELECTORS[i]).html("<i class=\"fas fa-thumbs-down\"></i>")
                     })
                 }
@@ -542,6 +547,7 @@ for (let i=0; i<5; i++) {
                 data => {
                     getAndLoadAsync(thisChoice["id"]).then(data => {
                         loadUser()
+                        getAndLoadChoice(thisChoice["id"])
                         $(ALTERNATIVE_DOWN_SELECTORS[i]).html("<i class=\"fas fa-thumbs-down\"></i>")
                     })
                 }
