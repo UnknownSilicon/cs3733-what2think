@@ -247,11 +247,14 @@ async function login(url, data) {
 function showInvalidChoice() {
     hideLogin()
     hideDescription()
+    $("#right-side").addClass("d-none")
+    PARTICIPANT_TAG.innerText = ""
     CHOICE_TITLE.innerText = "Choice Invalid"
 }
 
 function hideLogin() {
     $("#login-card").addClass("d-none")
+    $("#loggedin-card").addClass("d-none")
 }
 
 function hideDescription() {
@@ -260,6 +263,7 @@ function hideDescription() {
 
 function loadUser() {
     console.log("Loading user")
+
     $("#login-card").addClass("d-none")
     $("#loggedin-card").removeClass("d-none")
     $("#logged-in-text").html("Logged In As <div class=\"text-success\">" + thisUser["name"] + "</div>")
@@ -299,6 +303,7 @@ function loadUser() {
     if (!thisChoice["completed"]) {
         $(":button").removeAttr("disabled")
     }
+
 }
 
 function userApproves(altIndex) {
@@ -455,7 +460,9 @@ $(document).on("click", "#login-button", function (e) {
                     LOGIN_BUTTON.html("Error!")
                     LOGIN_BUTTON.removeClass("btn-primary").addClass("btn-danger")
 
-                    if (data["error"].toLowerCase().includes("password")) {
+                    getAndLoadChoice(thisChoice["id"])
+
+                    if (data["error"].includes("password")) {
                         $("#invalid-pw-second").addClass("invalid-feedback").removeClass("d-none")
                         $("#invalid-pw-main").addClass("d-none").removeClass("invalid-feedback")
                         $("#login-password").removeClass("is-valid").addClass("is-invalid")
@@ -501,6 +508,7 @@ for (let i=0; i<5; i++) {
                 data => {
                     getAndLoadAsync(thisChoice["id"]).then(data => {
                         loadUser()
+                        getAndLoadChoice(thisChoice["id"])
                         $(ALTERNATIVE_UP_SELECTORS[i]).html("<i class=\"fas fa-thumbs-up\"></i>")
                     })
                 }
@@ -511,6 +519,7 @@ for (let i=0; i<5; i++) {
                 data => {
                     getAndLoadAsync(thisChoice["id"]).then(data => {
                         loadUser()
+                        getAndLoadChoice(thisChoice["id"])
                         $(ALTERNATIVE_UP_SELECTORS[i]).html("<i class=\"fas fa-thumbs-up\"></i>")
                     })
 
@@ -527,6 +536,7 @@ for (let i=0; i<5; i++) {
                 data => {
                     getAndLoadAsync(thisChoice["id"]).then(data => {
                         loadUser()
+                        getAndLoadChoice(thisChoice["id"])
                         $(ALTERNATIVE_DOWN_SELECTORS[i]).html("<i class=\"fas fa-thumbs-down\"></i>")
                     })
                 }
@@ -537,6 +547,7 @@ for (let i=0; i<5; i++) {
                 data => {
                     getAndLoadAsync(thisChoice["id"]).then(data => {
                         loadUser()
+                        getAndLoadChoice(thisChoice["id"])
                         $(ALTERNATIVE_DOWN_SELECTORS[i]).html("<i class=\"fas fa-thumbs-down\"></i>")
                     })
                 }
