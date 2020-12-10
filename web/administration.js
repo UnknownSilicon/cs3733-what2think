@@ -1,6 +1,6 @@
 let GET_REPORT_URL = "https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/aaaaaaaaadmin/choices"
 let DELETE_URL = " https://dz8pxyqdre.execute-api.us-east-1.amazonaws.com/beta/aaaaaaaaadmin/delete"
-let DELETE_BUTTON = $("#delete-button")[0]
+let DELETE_BUTTON = $("#delete-button")
 let REPORT_BUTTON = $("#report-button")[0]
 
 function loadReport() {
@@ -131,6 +131,8 @@ async function doDeletion(cutoff) {
 async function doDeletionAsync(cutoff) {
     doDeletion(cutoff).then( data => {
         getAndLoadReport()
+        DELETE_BUTTON.html("Delete")
+        DELETE_BUTTON.removeAttr("disabled")
     })
 }
 
@@ -140,7 +142,7 @@ $(document).ready(function() {
 })
 
 $(document).on("click", "#report-button", function (e){
-    REPORT_BUTTON.innerHTML = "<i class=\"fas fa-spinner fa-spin\"><\i>"
+    REPORT_BUTTON.innerHTML = "Loading..."
     REPORT_BUTTON.disabled = true
     getAndLoadAsync().then(
         data => {
@@ -157,12 +159,13 @@ $(document).on("click", "#delete-button", function (e){
         return
     }
     $("#cutoff").removeClass("is-invalid")
-    DELETE_BUTTON.innerHTML = "<i class=\"fas fa-spinner fa-spin\"><\i>"
-    DELETE_BUTTON.disabled = true
+
+    DELETE_BUTTON.html("Loading...")
+    DELETE_BUTTON.attr("disabled", "disabled")
+
     doDeletionAsync(cutoff).then(
         data => {
-            DELETE_BUTTON.innerHTML = "Delete"
-            DELETE_BUTTON.disabled = false
+
         }
     );
 })
