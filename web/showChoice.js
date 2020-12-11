@@ -93,12 +93,18 @@ function createFeedback(feedback) {
 
     p.innerText = feedback["content"]
 
-    footer.innerText = feedback["user"]["name"] + " - " + feedback["timestamp"]
+    footer.innerText = feedback["user"]["name"] + " - " + fixTimestamp(feedback["timestamp"])
 
     quote.appendChild(p)
     quote.appendChild(footer)
 
     return quote
+}
+
+function fixTimestamp(stamp) {
+    let date = stamp.split(" ")[0]
+    let times = stamp.split(" ")[1].split(":")
+    return date + " " + times[0] + ":" + times[1]
 }
 
 function loadChoice(choice) {
