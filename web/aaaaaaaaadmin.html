@@ -52,72 +52,17 @@
         </div>
         <div class="col-3">
             <div class="sticky-top">
-                <div class="card", id="delete-card">
+                <div class="card" id="delete-card">
                     <div class="card-body">
                         <h5 class="card-title">Delete Choices</h5>
                         <div class="form-group">
-                            <input type="text", class="form-control" id="cutoff" placeholder="cutoff..." required>
+                            <input type="text" class="form-control" id="cutoff" placeholder="cutoff (days)..." required>
                             
                         </div>
-                        <button type="button" class="btn btn-primary" id="delete-button" disabled>Delete</button>
+                        <button type="button" class="btn btn-primary" id="delete-button" >Delete</button>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-7">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item d-none" id="alt1">
-                    <div class="container" id="alt1-cont">
-                        <div class="row">
-                            <div class="card col">
-                                <div class="card-body">
-                                    <h5 class="card-title">Alternative 1</h5>
-                                    <p class="card-text" id="alt1-desc">Alt 1</p>
-                                    <hr>
-                                    <div class="float-right">
-                                        <div id="alt1-feedbacks">
-                                            <!--<blockquote class="blockquote p-2 border">
-                                                <p class="mb-0">Test</p>
-                                                <footer class="blockquote-footer">Jake - 27 Nov 20 3:11PM</footer>
-                                            </blockquote>-->
-                                        </div>
-                                        <form class="needs-validation" novalidate>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <label>
-                                                        <input disabled type="text" class="form-control feedback-input" id="alt1-text" placeholder="Feedback">
-                                                        <div class="invalid-feedback">Please enter a feedback of at least 1 character and no more than 350 characters</div>
-                                                    </label>
-                                                </div>
-                                                <div class="col-3 text-right">
-                                                    <button disabled type="button" class="btn btn-primary" id="alt1-post">Post</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-0">
-                                <div class="sticky-top">
-                                    <div>
-                                        <button disabled class="btn btn-secondary m-2" data-container="body" data-toggle="popover" data-placement="left" data-content="" data-trigger="hover" id="alt1-up"><i class="fas fa-thumbs-up"></i></button>
-                                        <x-count id="alt1-up-count">0</x-count>
-                                    </div>
-                                    <div>
-                                        <button disabled class="btn btn-secondary m-2" data-container="body" data-toggle="popover" data-placement="left" data-content="" data-trigger="hover" id="alt1-down"><i class="fas fa-thumbs-down"></i></button>
-                                        <x-count id="alt1-down-count">0</x-count>
-                                    </div>
-                                    <div>
-                                        <button disabled class="btn btn-primary m-2" id="alt1-complete"><i class="fas fa-check"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
         </div>
     </div>
 </div>
